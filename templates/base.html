@@ -27,9 +27,9 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 	<link href="{% static 'css/popuo-box.css' %}" rel="stylesheet" type="text/css" media="all" />
 	<!--//pop-up-box-->
 	<!-- price range -->
-	<link rel="stylesheet" type="text/css" href="css/jquery-ui1.css">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/jquery-ui1.css' %}">
 	<!-- fonts -->
-	<link href="{% static '//fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800' %}" rel="stylesheet">
+	<link href="//fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800" rel="stylesheet">
 </head>
 
 <body>
@@ -38,13 +38,29 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 		<p>Grocery Offer Zone Top Deals & Discounts</p>
 	</div>
 	<!-- //top-header -->
+
+	{% for message in messages%}
+                    <div class="alert alert-success" role="alert">
+                      {{message}}
+                    </div>
+                    {% endfor %}
+
+	{% comment %} {% for message in messages%}
+	<div class="alert alert-warning alert-dismissible fade show" role="alert">
+		 {{message}}
+		<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+		  <span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+	{% endfor %} {% endcomment %}
+	
 	<!-- header-bot-->
 	<div class="header-bot">
 		<div class="header-bot_inner_wthreeinfo_header_mid">
 			<!-- header-bot-->
 			<div class="col-md-4 logo_agile">
 				<h1>
-					<a href="index">
+					<a href="/">
 						<span>G</span>rocery
 						<span>S</span>hoppy
 						<img src="{% static 'images/logo2.png' %}" alt=" ">
@@ -63,6 +79,8 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 					<li>
 						<span class="fa fa-phone" aria-hidden="true"></span> 001 234 5678
 					</li>
+
+					{% if not user.is_authenticated %}
 					<li>
 						<a href="#" data-toggle="modal" data-target="#myModal1">
 							<span class="fa fa-unlock-alt" aria-hidden="true"></span> Sign In </a>
@@ -70,6 +88,12 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 					<li>
 						<a href="#" data-toggle="modal" data-target="#myModal2">
 							<span class="fa fa-pencil-square-o" aria-hidden="true"></span> Sign Up </a>
+						</li>
+					{% endif %}
+
+					<li>
+						<a href="#" data-toggle="modal" data-target="#myModal2">
+							<span class="fa fa-pencil-square-o" aria-hidden="true"></span>{{user.first_name}}</a>
 					</li>
 				</ul>
 				<!-- //header lists -->
@@ -122,9 +146,10 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 							<a href="#" data-toggle="modal" data-target="#myModal2">
 								Sign Up Now</a>
 						</p>
-						<form action="#" method="post">
+						<form action="login" method="post">
+							{% csrf_token %}
 							<div class="styled-input agile-styled-input-top">
-								<input type="text" placeholder="User Name" name="Name" required="">
+								<input type="email" placeholder="Email" name="email" required="">
 							</div>
 							<div class="styled-input">
 								<input type="password" placeholder="Password" name="password" required="">
@@ -159,23 +184,24 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 						<p>
 							Come join the Grocery Shoppy! Let's set up your Account.
 						</p>
-						<form action="#" method="post">
+						<form action="signup" method="post">
+							{% csrf_token %}
 							<div class="styled-input agile-styled-input-top">
-								<input type="text" placeholder="Name" name="Name" required="">
+								<input type="text" placeholder="Name" name="name" required="">
 							</div>
 							<div class="styled-input">
-								<input type="email" placeholder="E-mail" name="Email" required="">
+								<input type="email" placeholder="E-mail" name="email" required="">
 							</div>
 							<div class="styled-input">
-								<input type="password" placeholder="Password" name="password" id="password1" required="">
+								<input type="password" placeholder="Password" name="password" id="password" required="">
 							</div>
 							<div class="styled-input">
-								<input type="password" placeholder="Confirm Password" name="Confirm Password" id="password2" required="">
+								<input type="password" placeholder="Confirm Password" name="confirm_pass" id="confirm_pass" required="">
 							</div>
 							<input type="submit" value="Sign Up">
 						</form>
 						<p>
-							<a href="#">By clicking register, I agree to your terms</a>
+							<a href="terms">By clicking register, I agree to your terms</a>
 						</p>
 					</div>
 				</div>
@@ -191,19 +217,20 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 		<div class="container">
 			<div class="agileits-navi_search">
 				<form action="#" method="post">
-					<select id="agileinfo-nav_search" name="agileinfo_search" required="">
+					<select id="agileinfo-nav_search" name="agileinfo_search" required="" onchange="location = this.value;">
 						<option value="">All Categories</option>
-						<option value="Kitchen">Kitchen</option>
-						<option value="Household">Household</option>
-						<option value="Snacks &amp; Beverages">Snacks & Beverages</option>
-						<option value="Personal Care">Personal Care</option>
-						<option value="Gift Hampers">Gift Hampers</option>
-						<option value="Fruits &amp; Vegetables">Fruits & Vegetables</option>
-						<option value="Baby Care">Baby Care</option>
-						<option value="Soft Drinks &amp; Juices">Soft Drinks & Juices</option>
-						<option value="Frozen Food">Frozen Food</option>
-						<option value="Bread &amp; Bakery">Bread & Bakery</option>
-						<option value="Sweets">Sweets</option>
+						<option value="product">Kitchen</option>
+						<option value="product">Household</option>
+						<option value="product">Snacks & Beverages</option>
+						<option value="product">Personal Care</option>
+						<option value="product">Gift Hampers</option>
+						<option value="product">Fruits & Vegetables</option>
+						<option value="product">Baby Care</option>
+						<option value="product">Soft Drinks & Juices</option>
+						<option value="product">Frozen Food</option>
+						<option value="product">Bread & Bakery</option>
+						<option value="product">Sweets</option>
+						
 					</select>
 				</form>
 			</div>
@@ -224,7 +251,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 						<div class="collapse navbar-collapse menu--shylock" id="bs-example-navbar-collapse-1">
 							<ul class="nav navbar-nav menu__list">
 								<li class="active">
-									<a class="nav-stylehead" href="index">Home
+									<a class="nav-stylehead" href="/">Home
 										<span class="sr-only">(current)</span>
 									</a>
 								</li>
@@ -244,44 +271,44 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 														<a href="product">Baking Supplies</a>
 													</li>
 													<li>
-														<a href="product.html">Coffee, Tea & Beverages</a>
+														<a href="product">Coffee, Tea & Beverages</a>
 													</li>
 													<li>
-														<a href="product.html">Dried Fruits, Nuts</a>
+														<a href="product">Dried Fruits, Nuts</a>
 													</li>
 													<li>
-														<a href="product.html">Sweets, Chocolate</a>
+														<a href="product">Sweets, Chocolate</a>
 													</li>
 													<li>
-														<a href="product.html">Spices & Masalas</a>
+														<a href="product">Spices & Masalas</a>
 													</li>
 													<li>
-														<a href="product.html">Jams, Honey & Spreads</a>
+														<a href="product">Jams, Honey & Spreads</a>
 													</li>
 												</ul>
 											</div>
 											<div class="col-sm-4 multi-gd-img">
 												<ul class="multi-column-dropdown">
 													<li>
-														<a href="product.html">Pickles</a>
+														<a href="product">Pickles</a>
 													</li>
 													<li>
-														<a href="product.html">Pasta & Noodles</a>
+														<a href="product">Pasta & Noodles</a>
 													</li>
 													<li>
-														<a href="product.html">Rice, Flour & Pulses</a>
+														<a href="product">Rice, Flour & Pulses</a>
 													</li>
 													<li>
-														<a href="product.html">Sauces & Cooking Pastes</a>
+														<a href="product">Sauces & Cooking Pastes</a>
 													</li>
 													<li>
-														<a href="product.html">Snack Foods</a>
+														<a href="product">Snack Foods</a>
 													</li>
 													<li>
-														<a href="product.html">Oils, Vinegars</a>
+														<a href="product">Oils, Vinegars</a>
 													</li>
 													<li>
-														<a href="product.html">Meat, Poultry & Seafood</a>
+														<a href="product">Meat, Poultry & Seafood</a>
 													</li>
 												</ul>
 											</div>
@@ -307,44 +334,44 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 														<a href="product">Baking Supplies</a>
 													</li>
 													<li>
-														<a href="product.html">Coffee, Tea & Beverages</a>
+														<a href="product">Coffee, Tea & Beverages</a>
 													</li>
 													<li>
-														<a href="product.html">Dried Fruits, Nuts</a>
+														<a href="product">Dried Fruits, Nuts</a>
 													</li>
 													<li>
-														<a href="product.html">Sweets, Chocolate</a>
+														<a href="product">Sweets, Chocolate</a>
 													</li>
 													<li>
-														<a href="product.html">Spices & Masalas</a>
+														<a href="product">Spices & Masalas</a>
 													</li>
 													<li>
-														<a href="product.html">Jams, Honey & Spreads</a>
+														<a href="product">Jams, Honey & Spreads</a>
 													</li>
 												</ul>
 											</div>
 											<div class="col-sm-4 multi-gd-img">
 												<ul class="multi-column-dropdown">
 													<li>
-														<a href="product.html">Pickles</a>
+														<a href="product">Pickles</a>
 													</li>
 													<li>
-														<a href="product.html">Pasta & Noodles</a>
+														<a href="product">Pasta & Noodles</a>
 													</li>
 													<li>
-														<a href="product.html">Rice, Flour & Pulses</a>
+														<a href="product">Rice, Flour & Pulses</a>
 													</li>
 													<li>
-														<a href="product.html">Sauces & Cooking Pastes</a>
+														<a href="product">Sauces & Cooking Pastes</a>
 													</li>
 													<li>
-														<a href="product.html">Snack Foods</a>
+														<a href="product">Snack Foods</a>
 													</li>
 													<li>
-														<a href="product.html">Oils, Vinegars</a>
+														<a href="product">Oils, Vinegars</a>
 													</li>
 													<li>
-														<a href="product.html">Meat, Poultry & Seafood</a>
+														<a href="product">Meat, Poultry & Seafood</a>
 													</li>
 												</ul>
 											</div>
@@ -482,7 +509,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 									<a class="nav-stylehead" href="about">About Us</a>
 								</li>
 								<li class="">
-									<a class="nav-stylehead" href="contact.html">Contact</a>
+									<a class="nav-stylehead" href="contact">Contact</a>
 								</li>
 							</ul>
 						</div>
@@ -616,22 +643,22 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 						<h3>Quick Links</h3>
 						<ul>
 							<li>
-								<a href="about.html">About Us</a>
+								<a href="about">About Us</a>
 							</li>
 							<li>
-								<a href="contact.html">Contact Us</a>
+								<a href="contact">Contact Us</a>
 							</li>
 							<li>
-								<a href="help.html">Help</a>
+								<a href="help">Help</a>
 							</li>
 							<li>
-								<a href="faqs.html">Faqs</a>
+								<a href="faqs">Faqs</a>
 							</li>
 							<li>
-								<a href="terms.html">Terms of use</a>
+								<a href="terms">Terms of use</a>
 							</li>
 							<li>
-								<a href="privacy.html">Privacy Policy</a>
+								<a href="privacy">Privacy Policy</a>
 							</li>
 						</ul>
 					</div>
@@ -674,16 +701,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 							</li>
 						</ul>
 					</div>
-					<div class="agileits_app-devices">
-						<h5>Download the App</h5>
-						<a href="#">
-							<img src="{% static 'images/1.png' %}" alt="">
-						</a>
-						<a href="#">
-							<img src="{% static 'images/2.png' %}" alt="">
-						</a>
-						<div class="clearfix"> </div>
-					</div>
+					
 				</div>
 				<!-- //social icons -->
 				<div class="clearfix"></div>

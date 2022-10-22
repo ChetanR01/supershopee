@@ -13,4 +13,6 @@ urlpatterns = [
     path('terms',views.terms, name="terms"),
     path('payment',views.payment, name="payment"),
     path('privacy',views.privacy, name="privacy"),
+    path('signup',views.signup, name="signup"),
+    path('login',views.login, name="login"),
 ]
