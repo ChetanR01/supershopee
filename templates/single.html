@@ -23,9 +23,10 @@
 	<!-- //page -->
 	<!-- Single Page -->
 	<div class="banner-bootom-w3-agileits">
+		{% for product in products %}
 		<div class="container">
 			<!-- tittle heading -->
-			<h3 class="tittle-w3l">Single Page
+			<h3 class="tittle-w3l">{{product.category}} | {{product.subcategory}}
 				<span class="heading-style">
 					<i></i>
 					<i></i>
@@ -33,21 +34,24 @@
 				</span>
 			</h3>
 			<!-- //tittle heading -->
+
+			
+
 			<div class="col-md-5 single-right-left ">
 				<div class="grid images_3_of_2">
 					<div class="flexslider">
 						<ul class="slides">
-							<li data-thumb="images/si.jpg">
+							<li data-thumb="{{product.img1.url}}">
 								<div class="thumb-image">
-									<img src="images/si.jpg" data-imagezoom="true" class="img-responsive" alt=""> </div>
+									<img src="{{product.img1.url}}" data-imagezoom="true" class="img-responsive" alt=""> </div>
 							</li>
-							<li data-thumb="images/si2.jpg">
+							<li data-thumb="{{product.img2.url}}">
 								<div class="thumb-image">
-									<img src="images/si2.jpg" data-imagezoom="true" class="img-responsive" alt=""> </div>
+									<img src="{{product.img2.url}}" data-imagezoom="true" class="img-responsive" alt=""> </div>
 							</li>
-							<li data-thumb="images/si3.jpg">
+							<li data-thumb="{{product.img3.url}}">
 								<div class="thumb-image">
-									<img src="images/si3.jpg" data-imagezoom="true" class="img-responsive" alt=""> </div>
+									<img src="{{product.img3.url}}" data-imagezoom="true" class="img-responsive" alt=""> </div>
 							</li>
 						</ul>
 						<div class="clearfix"></div>
@@ -55,24 +59,10 @@
 				</div>
 			</div>
 			<div class="col-md-7 single-right-left simpleCart_shelfItem">
-				<h3>Zeeba Premium Basmati Rice - 5 KG</h3>
-				<div class="rating1">
-					<span class="starRating">
-						<input id="rating5" type="radio" name="rating" value="5">
-						<label for="rating5">5</label>
-						<input id="rating4" type="radio" name="rating" value="4">
-						<label for="rating4">4</label>
-						<input id="rating3" type="radio" name="rating" value="3" checked="">
-						<label for="rating3">3</label>
-						<input id="rating2" type="radio" name="rating" value="2">
-						<label for="rating2">2</label>
-						<input id="rating1" type="radio" name="rating" value="1">
-						<label for="rating1">1</label>
-					</span>
-				</div>
+				<h3>{{product.name}}</h3>
 				<p>
-					<span class="item_price">$950.00</span>
-					<del>$1300.00</del>
+					<span class="item_price">${{product.price}}</span>
+					<del>${{product.mrp}}</del>
 					<label>Free delivery</label>
 				</p>
 				<div class="single-infoagile">
@@ -84,11 +74,8 @@
 							Shipping Speed to Delivery.
 						</li>
 						<li>
-							Sold and fulfilled by Supple Tek (3.6 out of 5 | 8 ratings).
-						</li>
-						<li>
 							1 offer from
-							<span class="item_price">$950.00</span>
+							<span class="item_price">${{product.price}}</span>
 						</li>
 					</ul>
 				</div>
@@ -96,20 +83,10 @@
 					<p>
 						<i class="fa fa-hand-o-right" aria-hidden="true"></i>This is a
 						<label>Vegetarian</label> product.</p>
-					<ul>
-						<li>
-							Best for Biryani and Pulao.
-						</li>
-						<li>
-							After cooking, Zeeba Basmati rice grains attain an extra ordinary length of upto 2.4 cm/~1 inch.
-						</li>
-						<li>
-							Zeeba Basmati rice adheres to the highest food afety standards as your health is paramount to us.
-						</li>
-						<li>
-							Contains only the best and purest grade of basmati rice grain of Export quality.
-						</li>
-					</ul>
+					
+					<p>
+						{{product.product_details | safe}}
+					</p>
 					<p>
 						<i class="fa fa-refresh" aria-hidden="true"></i>All food products are
 						<label>non-returnable.</label>
@@ -138,6 +115,7 @@
 			</div>
 			<div class="clearfix"> </div>
 		</div>
+		{% endfor %}
 	</div>
 	<!-- //Single Page -->
 	<!-- special offers -->
@@ -396,12 +374,12 @@
 						<div class="w3l-specilamk">
 							<div class="speioffer-agile">
 								<a href="single2.html">
-									<img src="images/s9.jpg" alt="">
+									<img src="{% static 'images/s9.jpg' %}" alt="">
 								</a>
 							</div>
 							<div class="product-name-w3l">
 								<h4>
-									<a href="single2.html">Lakme Eyeconic Kajal, 0.35 g</a>
+									<a href="single">Lakme Eyeconic Kajal, 0.35 g</a>
 								</h4>
 								<div class="w3l-pricehkj">
 									<h6>$153.00</h6>
@@ -432,3 +410,4 @@
 	</div>
 	<!-- //special offers -->
 {% endblock %}
+

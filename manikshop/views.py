@@ -7,16 +7,32 @@ from django.core.mail import send_mail, EmailMessage
 from django.core.paginator import Paginator
 from django.template.loader import render_to_string, get_template
 
+from .models import ProductDetails
+
+
+from django.shortcuts import render
+from .models import SubCategory, Category
+from django.http import HttpResponse
+import json
+
+def get_subcategory(request):
+    id = request.GET.get('id', '')
+    result = list(SubCategory.objects.filter(category_id=int(id)).values('id', 'name'))
+    return HttpResponse(json.dumps(result), content_type="application/json")
+
 # Create your views here.
 def index(request):
+    products = ProductDetails.objects.all()
+    return render(request, "index.html", {"products":products})
 
-    return render(request, "index.html", {})
+def product(request,id):
+    product = ProductDetails.objects.filter(id=id)
+    return render(request, "product.html", {"product":product})
 
-def product(request):
-    return render(request, "product.html", {})
-
-def single(request):
-    return render(request, "single.html", {})
+def single(request, id):
+    product = ProductDetails.objects.filter(id=id)
+    print("####", product)
+    return render(request, "single.html", {"products":product})
 
 def about(request):
     return render(request, "about.html", {})

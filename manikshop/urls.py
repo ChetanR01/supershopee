@@ -1,10 +1,15 @@
-from django.urls import path
+from django.urls import path, re_path
 from . import views
 
+# from django.conf.urls import url
+from . import views
+app_name = 'manikshop'
+
 urlpatterns = [
+    re_path(r'^getSubcategory/$', views.get_subcategory),
     path('',views.index, name="index" ),
-    path('product',views.product, name="product" ),
-    path('single',views.single, name="single"),
+    path('product/<int:id>',views.product, name="product" ),
+    path('single/<int:id>',views.single, name="single"),
     path('about',views.about, name="about" ),
     path('contact',views.contact, name="contact"),
     path('checkout',views.checkout, name="checkout"),
