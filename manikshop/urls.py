@@ -9,6 +9,8 @@ urlpatterns = [
     re_path(r'^getSubcategory/$', views.get_subcategory),
     path('',views.index, name="index" ),
     path('product/<int:id>',views.product, name="product" ),
+    path('search/<str:search_type>/<int:id>',views.search, name="search" ),
+    path('default_search',views.default_search, name="default_search"),
     path('single/<int:id>',views.single, name="single"),
     path('about',views.about, name="about" ),
     path('contact',views.contact, name="contact"),

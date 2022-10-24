@@ -23,40 +23,92 @@ def get_subcategory(request):
 # Create your views here.
 def index(request):
     products = ProductDetails.objects.all()
-    return render(request, "index.html", {"products":products})
+    all_categories= Category.objects.all()
+    sub_categories= SubCategory.objects.all()
+    return render(request, "index.html", {"all_categories":all_categories,"sub_categories":sub_categories,"products":products})
 
 def product(request,id):
     product = ProductDetails.objects.filter(id=id)
-    return render(request, "product.html", {"product":product})
+    all_categories= Category.objects.all()
+    sub_categories= SubCategory.objects.all()
+    return render(request, "product.html", {"all_categories":all_categories,"sub_categories":sub_categories,"product":product})
 
 def single(request, id):
     product = ProductDetails.objects.filter(id=id)
+    all_categories= Category.objects.all()
+    sub_categories= SubCategory.objects.all()
     print("####", product)
-    return render(request, "single.html", {"products":product})
+    return render(request, "single.html", {"all_categories":all_categories,"sub_categories":sub_categories,"products":product})
+
+def default_search(request):
+    all_categories= Category.objects.all()
+    sub_categories= SubCategory.objects.all()
+    if request.method == "GET":
+        search_for =  request.GET.get('search') 
+        print("Searched for:",search_for)
+    product = ProductDetails.objects.filter(name__icontains=search_for)
+    return render(request, "search.html", {"all_categories":all_categories,"sub_categories":sub_categories,"product":product})
+
+def search(request,search_type,id):
+    all_categories= Category.objects.all()
+    sub_categories= SubCategory.objects.all()
+    if search_type =="category":
+        product = ProductDetails.objects.filter(category=id)
+        return render(request, "search.html", {"all_categories":all_categories,"sub_categories":sub_categories,"product":product})
+    elif search_type =="subcategory":
+        product = ProductDetails.objects.filter(subcategory=id)
+        return render(request, "search.html", {"all_categories":all_categories,"sub_categories":sub_categories,"product":product})
+    # elif request.method=="GET" and search_type =="default":
+    #     product = ProductDetails.objects.filter(name__contains=request)
+    #     return render(request, "search.html", {"product":product})
+
 
 def about(request):
-    return render(request, "about.html", {})
+    all_categories= Category.objects.all()
+    sub_categories= SubCategory.objects.all()
+    return render(request, "about.html", {"all_categories":all_categories,"sub_categories":sub_categories})
 
 def contact(request):
-    return render(request, "contact.html", {})
+    products = ProductDetails.objects.all()
+    all_categories= Category.objects.all()
+    sub_categories= SubCategory.objects.all()
+    return render(request, "contact.html", {"all_categories":all_categories,"sub_categories":sub_categories})
 
 def checkout(request):
-    return render(request, "checkout.html", {})
+    products = ProductDetails.objects.all()
+    all_categories= Category.objects.all()
+    sub_categories= SubCategory.objects.all()
+    return render(request, "checkout.html", {"all_categories":all_categories,"sub_categories":sub_categories})
 
 def faqs(request):
-    return render(request, "faqs.html", {})
+    products = ProductDetails.objects.all()
+    all_categories= Category.objects.all()
+    sub_categories= SubCategory.objects.all()
+    return render(request, "faqs.html", {"all_categories":all_categories,"sub_categories":sub_categories})
 
 def help(request):
-    return render(request, "help.html", {})
+    products = ProductDetails.objects.all()
+    all_categories= Category.objects.all()
+    sub_categories= SubCategory.objects.all()
+    return render(request, "help.html", {"all_categories":all_categories,"sub_categories":sub_categories})
 
 def terms(request):
-    return render(request, "terms.html", {})
+    products = ProductDetails.objects.all()
+    all_categories= Category.objects.all()
+    sub_categories= SubCategory.objects.all()
+    return render(request, "terms.html", {"all_categories":all_categories,"sub_categories":sub_categories})
 
 def payment(request):
-    return render(request, "payment.html", {})
+    products = ProductDetails.objects.all()
+    all_categories= Category.objects.all()
+    sub_categories= SubCategory.objects.all()
+    return render(request, "payment.html", {"all_categories":all_categories,"sub_categories":sub_categories})
 
 def privacy(request):
-    return render(request, "privacy.html", {})
+    products = ProductDetails.objects.all()
+    all_categories= Category.objects.all()
+    sub_categories= SubCategory.objects.all()
+    return render(request, "privacy.html", {"all_categories":all_categories,"sub_categories":sub_categories})
 
 def signup(request):
     if request.method== "POST":
