@@ -13,7 +13,7 @@ from .models import ProductDetails
 
 
 from django.shortcuts import render
-from .models import SubCategory, Category, Extended_user
+from .models import SubCategory, Category, Extended_user,Deal
 from django.http import HttpResponse
 import json
 
@@ -25,11 +25,13 @@ def get_subcategory(request):
 # Create your views here.
 def index(request):
     products = ProductDetails.objects.all()
+    deals = Deal.objects.all()
     all_categories= Category.objects.all()
     sub_categories= SubCategory.objects.all()
-    return render(request, "index.html", {"all_categories":all_categories,"sub_categories":sub_categories,"products":products})
+    return render(request, "index.html", {"all_categories":all_categories,"sub_categories":sub_categories,"products":products,"deals":deals})
 
 def product(request):
+    deals = Deal.objects.all()
     products = ProductDetails.objects.all()
 
     p = Paginator(products, 21)
@@ -61,7 +63,51 @@ def product(request):
         no_col= 7
     all_categories= Category.objects.all()
     sub_categories= SubCategory.objects.all()
-    return render(request, "product.html", {"all_categories":all_categories,"sub_categories":sub_categories,"products":page_obj,"no_col":no_col})
+    return render(request, "product.html", {"all_categories":all_categories,"sub_categories":sub_categories,"products":page_obj,"no_col":no_col,"deals":deals})
+
+def deal_product(request,id):
+    deals = Deal.objects.all()
+    deal_product = Deal.objects.filter(id=id)
+    products = ProductDetails.objects.all()
+
+    # print("Deal Products",deal_product)
+    # print("Deal Products. products",deal_product)
+    # for products in deal_product:
+    #     # for products in deal.products:
+    #     no_pro = len(products)
+    #     print("No product",no_pro)
+
+
+    p = Paginator(deal_product, 21)
+    page_no= request.GET.get('page')
+
+    try:
+        page_obj = p.get_page(page_no)
+    except PageNotAnInteger:
+        page_obj=p.page(1)
+    except EmptyPage:
+        page_obj=p.page(p.num_pages)
+
+    print(len(products))
+    for product in page_obj:
+        print(product)
+    if len(page_obj) <= 3:
+        no_col= 1
+    elif len(page_obj) <= 6:
+        no_col= 2
+    elif len(page_obj) <= 9:
+        no_col= 3
+    elif len(page_obj) <= 12:
+        no_col= 4
+    elif len(page_obj) <= 15:
+        no_col= 5
+    elif len(page_obj) <= 18:
+        no_col= 6
+    elif len(page_obj) <= 21:
+        no_col= 7
+    all_categories= Category.objects.all()
+    sub_categories= SubCategory.objects.all()
+    return render(request, "deal-product.html", {"all_categories":all_categories,"sub_categories":sub_categories,"products":deal_product,"no_col":no_col,"deals":deals,"deal_product":deal_product})
 
 def single(request, id):
     product = ProductDetails.objects.filter(id=id)
@@ -74,6 +120,7 @@ def single(request, id):
     return render(request, "single.html", {"all_categories":all_categories,"sub_categories":sub_categories,"products":product,"related_products":related_products})
 
 def default_search(request):
+    deals = Deal.objects.all()
     all_categories= Category.objects.all()
     sub_categories= SubCategory.objects.all()
     if request.method == "GET":
@@ -110,10 +157,11 @@ def default_search(request):
         no_col= 6
     elif len(page_obj) <= 21:
         no_col= 7
-    return render(request, "search.html", {"all_categories":all_categories,"sub_categories":sub_categories,"products":page_obj,"no_col":no_col})
+    return render(request, "search.html", {"all_categories":all_categories,"sub_categories":sub_categories,"products":page_obj,"no_col":no_col,"deals":deals})
 
 
 def search(request,search_type,id):
+    deals = Deal.objects.all()
     all_categories= Category.objects.all()
     sub_categories= SubCategory.objects.all()
     if search_type =="category":
@@ -146,7 +194,7 @@ def search(request,search_type,id):
             no_col= 6
         elif len(page_obj) <= 21:
             no_col= 7
-        return render(request, "search.html", {"all_categories":all_categories,"sub_categories":sub_categories,"products":page_obj,"no_col":no_col})
+        return render(request, "search.html", {"all_categories":all_categories,"sub_categories":sub_categories,"products":page_obj,"no_col":no_col,"deals":deals})
     elif search_type =="subcategory":
         products = ProductDetails.objects.filter(subcategory=id)
         p = Paginator(products, 21)
@@ -176,7 +224,7 @@ def search(request,search_type,id):
             no_col= 6
         elif len(page_obj) <= 21:
             no_col= 7
-        return render(request, "search.html", {"all_categories":all_categories,"sub_categories":sub_categories,"products":page_obj,"no_col":no_col})
+        return render(request, "search.html", {"all_categories":all_categories,"sub_categories":sub_categories,"products":page_obj,"no_col":no_col,"deals":deals})
         
 
 
@@ -186,7 +234,6 @@ def about(request):
     return render(request, "about.html", {"all_categories":all_categories,"sub_categories":sub_categories})
 
 def contact(request):
-    products = ProductDetails.objects.all()
     all_categories= Category.objects.all()
     sub_categories= SubCategory.objects.all()
     return render(request, "contact.html", {"all_categories":all_categories,"sub_categories":sub_categories})

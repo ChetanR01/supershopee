@@ -1,15 +1,16 @@
 {% extends 'base.html' %}
 {% load static %}
-{% load mathfilters %}
 {% load columns %}
+{% load mathfilters %}
 {% block content %}
+
 	<!-- navigation -->
 	<div class="ban-top">
 		<div class="container">
 			<div class="agileits-navi_search">
 				<form action="#" method="post">
 					<select id="agileinfo-nav_search" name="agileinfo_search" required="" onchange="location = this.value;">
-						<option value="/product">All Categories</option>
+						<option value="">All Categories</option>
 						{% for category in all_categories %}
 						<option value="/search/category/{{category.id}}">{{category.name}}</option>
 						{% endfor %}
@@ -99,10 +100,8 @@
 						<a href="/">Home</a>
 						<i>|</i>
 					</li>
-					{% for product in products %}
-					{% if forloop.first %}
-					<li>{{product.category}}</li>
-					{% endif %}
+					{% for deal in deal_product %}
+					<li>{{deal.name}}</li>
 					{% endfor %}
 				</ul>
 			</div>
@@ -113,11 +112,9 @@
 	<div class="ads-grid">
 		<div class="container">
 			<!-- tittle heading -->
-			<h3 class="tittle-w3l">{% for product in products %}
-				{% if forloop.first %}
-				{{product.category}}
-				{% endif %}
-				{% endfor %}
+			<h3 class="tittle-w3l">{% for deal in deal_product %}
+					{{deal.name}}
+					{% endfor %}
 				<span class="heading-style">
 					<i></i>
 					<i></i>
@@ -163,7 +160,9 @@
 			<div class="agileinfo-ads-display col-md-9 w3l-rightpro">
 				<div class="wrapper">
 					<!-- first section -->
-					{% for col in products|columns:no_col %}
+					{% for deal in deal_product %}
+					{% if forloop.first %}
+					{% for col in deal.products.all|columns:no_col %}
 					<div class="product-sec1">
 						{% for product in col %}
 						<div class="col-xs-4 product-men">
@@ -207,9 +206,10 @@
 						</div>
 						{% endfor %}
 						
-						
 						<div class="clearfix"></div>
 					</div>
+					{% endfor %}
+					{% endif %}
 					{% endfor %}
 					<!-- //first section -->
 					
