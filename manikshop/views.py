@@ -6,6 +6,8 @@ from django.contrib import messages
 from django.core.mail import send_mail, EmailMessage
 from django.core.paginator import Paginator
 from django.template.loader import render_to_string, get_template
+from django.db.models import Q
+
 
 from .models import ProductDetails
 
@@ -27,18 +29,49 @@ def index(request):
     sub_categories= SubCategory.objects.all()
     return render(request, "index.html", {"all_categories":all_categories,"sub_categories":sub_categories,"products":products})
 
-def product(request,id):
-    product = ProductDetails.objects.filter(id=id)
+def product(request):
+    products = ProductDetails.objects.all()
+
+    p = Paginator(products, 21)
+    page_no= request.GET.get('page')
+
+    try:
+        page_obj = p.get_page(page_no)
+    except PageNotAnInteger:
+        page_obj=p.page(1)
+    except EmptyPage:
+        page_obj=p.page(p.num_pages)
+
+    print(len(products))
+    for product in page_obj:
+        print(product)
+    if len(page_obj) <= 3:
+        no_col= 1
+    elif len(page_obj) <= 6:
+        no_col= 2
+    elif len(page_obj) <= 9:
+        no_col= 3
+    elif len(page_obj) <= 12:
+        no_col= 4
+    elif len(page_obj) <= 15:
+        no_col= 5
+    elif len(page_obj) <= 18:
+        no_col= 6
+    elif len(page_obj) <= 21:
+        no_col= 7
     all_categories= Category.objects.all()
     sub_categories= SubCategory.objects.all()
-    return render(request, "product.html", {"all_categories":all_categories,"sub_categories":sub_categories,"product":product})
+    return render(request, "product.html", {"all_categories":all_categories,"sub_categories":sub_categories,"products":page_obj,"no_col":no_col})
 
 def single(request, id):
     product = ProductDetails.objects.filter(id=id)
+    for rel_pro in product:
+        rel_category = rel_pro.category
+    related_products = ProductDetails.objects.filter(category=rel_category)
     all_categories= Category.objects.all()
     sub_categories= SubCategory.objects.all()
     print("####", product)
-    return render(request, "single.html", {"all_categories":all_categories,"sub_categories":sub_categories,"products":product})
+    return render(request, "single.html", {"all_categories":all_categories,"sub_categories":sub_categories,"products":product,"related_products":related_products})
 
 def default_search(request):
     all_categories= Category.objects.all()
@@ -46,21 +79,105 @@ def default_search(request):
     if request.method == "GET":
         search_for =  request.GET.get('search') 
         print("Searched for:",search_for)
-    product = ProductDetails.objects.filter(name__icontains=search_for)
-    return render(request, "search.html", {"all_categories":all_categories,"sub_categories":sub_categories,"product":product})
+    products = ProductDetails.objects.filter(Q(name__icontains=search_for)| Q(product_details__icontains=search_for))
+
+    print("Related results",products)
+    
+    p = Paginator(products, 21)
+    page_no= request.GET.get('page')
+
+    try:
+        page_obj = p.get_page(page_no)
+    except PageNotAnInteger:
+        page_obj=p.page(1)
+    except EmptyPage:
+        page_obj=p.page(p.num_pages)
+
+    print(len(products))
+    for product in page_obj:
+        print(product)
+    if len(page_obj) <= 3:
+        no_col= 1
+    elif len(page_obj) <= 6:
+        no_col= 2
+    elif len(page_obj) <= 9:
+        no_col= 3
+    elif len(page_obj) <= 12:
+        no_col= 4
+    elif len(page_obj) <= 15:
+        no_col= 5
+    elif len(page_obj) <= 18:
+        no_col= 6
+    elif len(page_obj) <= 21:
+        no_col= 7
+    return render(request, "search.html", {"all_categories":all_categories,"sub_categories":sub_categories,"products":page_obj,"no_col":no_col})
+
 
 def search(request,search_type,id):
     all_categories= Category.objects.all()
     sub_categories= SubCategory.objects.all()
     if search_type =="category":
-        product = ProductDetails.objects.filter(category=id)
-        return render(request, "search.html", {"all_categories":all_categories,"sub_categories":sub_categories,"product":product})
+        products = ProductDetails.objects.filter(category=id)
+
+        p = Paginator(products, 21)
+        page_no= request.GET.get('page')
+
+        try:
+            page_obj = p.get_page(page_no)
+        except PageNotAnInteger:
+            page_obj=p.page(1)
+        except EmptyPage:
+            page_obj=p.page(p.num_pages)
+
+        print(len(products))
+        for product in page_obj:
+            print(product)
+        if len(page_obj) <= 3:
+            no_col= 1
+        elif len(page_obj) <= 6:
+            no_col= 2
+        elif len(page_obj) <= 9:
+            no_col= 3
+        elif len(page_obj) <= 12:
+            no_col= 4
+        elif len(page_obj) <= 15:
+            no_col= 5
+        elif len(page_obj) <= 18:
+            no_col= 6
+        elif len(page_obj) <= 21:
+            no_col= 7
+        return render(request, "search.html", {"all_categories":all_categories,"sub_categories":sub_categories,"products":page_obj,"no_col":no_col})
     elif search_type =="subcategory":
-        product = ProductDetails.objects.filter(subcategory=id)
-        return render(request, "search.html", {"all_categories":all_categories,"sub_categories":sub_categories,"product":product})
-    # elif request.method=="GET" and search_type =="default":
-    #     product = ProductDetails.objects.filter(name__contains=request)
-    #     return render(request, "search.html", {"product":product})
+        products = ProductDetails.objects.filter(subcategory=id)
+        p = Paginator(products, 21)
+        page_no= request.GET.get('page')
+
+        try:
+            page_obj = p.get_page(page_no)
+        except PageNotAnInteger:
+            page_obj=p.page(1)
+        except EmptyPage:
+            page_obj=p.page(p.num_pages)
+
+        print(len(products))
+        for product in page_obj:
+            print(product)
+        if len(page_obj) <= 3:
+            no_col= 1
+        elif len(page_obj) <= 6:
+            no_col= 2
+        elif len(page_obj) <= 9:
+            no_col= 3
+        elif len(page_obj) <= 12:
+            no_col= 4
+        elif len(page_obj) <= 15:
+            no_col= 5
+        elif len(page_obj) <= 18:
+            no_col= 6
+        elif len(page_obj) <= 21:
+            no_col= 7
+        return render(request, "search.html", {"all_categories":all_categories,"sub_categories":sub_categories,"products":page_obj,"no_col":no_col})
+        
 
 
 def about(request):

@@ -34,13 +34,13 @@
 						<div class="collapse navbar-collapse menu--shylock" id="bs-example-navbar-collapse-1">
 							<ul class="nav navbar-nav menu__list">
 								<li class="active">
-									<a class="nav-stylehead" href="/">Home
+									<a class="nav-stylehead" href="/product">All Products
 										<span class="sr-only">(current)</span>
 									</a>
 								</li>
 								
 								{% for category in all_categories %}
-								{% if forloop.counter < 4 %}
+								{% if forloop.counter < 5 %}
 								<li class="dropdown">
 									<a href="#" class="dropdown-toggle nav-stylehead" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{category.name}}
 										<span class="caret"></span>
@@ -75,12 +75,6 @@
 								{% endif %}
 								{% endfor %}
 								
-								<li class="">
-									<a class="nav-stylehead" href="/about">About Us</a>
-								</li>
-								<li class="">
-									<a class="nav-stylehead" href="/contact">Contact</a>
-								</li>
 							</ul>
 						</div>
 					</div>

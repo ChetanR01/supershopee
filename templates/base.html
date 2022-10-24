@@ -74,8 +74,17 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 						<a href="#" data-toggle="modal" data-target="#myModal1">
 							<span class="fa fa-truck" aria-hidden="true"></span>Track Order</a>
 					</li>
+					
 					<li>
-						<span class="fa fa-phone" aria-hidden="true"></span> 001 234 5678
+						<a href="/about" >
+							<span aria-hidden="true"></span>About Us
+						</a>
+					</li>
+					
+					<li>
+						<a href="/contact" >
+							<span class="fa fa-phone" aria-hidden="true"></span>Contact Us
+						</a>
 					</li>
 
 					{% if not user.is_authenticated %}
@@ -104,7 +113,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 				<!-- search -->
 				<div class="agileits_search">
 					<form id="search_form" name="gs" method="GET" action="/default_search">
-						<input name="search" type="search" placeholder="How can we help you today?" required="">
+						<input name="search" type="search" placeholder="What are you looking for?" required="">
 						<button type="submit" class="btn btn-default" aria-label="Left Align">
 							<span class="fa fa-search" aria-hidden="true"> </span>
 						</button>
@@ -386,22 +395,22 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 						<h3>Quick Links</h3>
 						<ul>
 							<li>
-								<a href="about">About Us</a>
+								<a href="/about">About Us</a>
 							</li>
 							<li>
-								<a href="contact">Contact Us</a>
+								<a href="/contact">Contact Us</a>
 							</li>
 							<li>
-								<a href="help">Help</a>
+								<a href="/help">Help</a>
 							</li>
 							<li>
-								<a href="faqs">Faqs</a>
+								<a href="/faqs">Faqs</a>
 							</li>
 							<li>
-								<a href="terms">Terms of use</a>
+								<a href="/terms">Terms of use</a>
 							</li>
 							<li>
-								<a href="privacy">Privacy Policy</a>
+								<a href="/privacy">Privacy Policy</a>
 							</li>
 						</ul>
 					</div>
