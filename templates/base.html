@@ -42,7 +42,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 	<!-- //top-header -->
 
 	{% for message in messages%}
-		<div class="alert alert-success alert-dismissible" role="alert">
+		<div class="alert alert-success alert-dismissible" role="alert" style="text-align: center;">
 			{{message}}
 			<button type="button" class="close" data-dismiss="alert" aria-label="Close">
 			  <span aria-hidden="true">&times;</span>
@@ -247,16 +247,16 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 						<form action="/profile" method="post">
 							{% csrf_token %}
 							<div class="styled-input agile-styled-input-top">
-								<input type="text" placeholder="Your Name = {{user.first_name}}" name="name" required="">
+								<input type="text" placeholder="Your Name = {{user.first_name}}" name="name" value="{{user.first_name}}" required="">
 							</div>
 							<div class="styled-input">
-								<input type="email" placeholder="Your E-mail = {{user.email}}" name="email" required="">
+								<input type="email" placeholder="Your E-mail = {{user.email}}" name="email" value="{{user.email}}" required="">
 							</div>
 							<div class="styled-input">
-								<input type="text" placeholder="Your Mobile No. = {{user.mobile_no}}" name="mobile_no" id="mobile_no" required="">
+								<input type="text" placeholder="Your Mobile No. = {{user.extended_user.mobile_no}}" name="mobile_no" value="{{user.extended_user.mobile_no}}" id="mobile_no" required="">
 							</div>
 							<div class="styled-input">
-								<input type="text" placeholder="Your Address = {{address}}" name="address" id="address" required="">
+								<input type="text" placeholder="Your Address = {{user.extended_user.address}}" name="address" value="{{user.extended_user.address}}" id="address" required="">
 							</div>
 							<input type="submit" value="Update Profile">
 						</form>

@@ -13,7 +13,7 @@ from .models import ProductDetails
 
 
 from django.shortcuts import render
-from .models import SubCategory, Category
+from .models import SubCategory, Category, Extended_user
 from django.http import HttpResponse
 import json
 
@@ -303,3 +303,59 @@ def logout(request):
     if request.user.is_authenticated:
         auth.logout(request)
     return redirect("/")
+
+def profile(request):
+    if request.method== "POST":
+        predata = User.objects.get(id=request.user.id)
+        name = request.POST['name']
+        email = request.POST['email']
+        mobile_no = request.POST['mobile_no']
+        address = request.POST['address']
+        predata.first_name = name
+        predata.email = email
+        predata.username = email
+
+        try:
+            data_check =  Extended_user.objects.get(user = predata)
+            print("data checker", data_check)
+        except:
+            data_check = False
+        # if mobile no. or photo already uploaded
+        if data_check:
+            try:
+                data_check.address = address
+                if len(mobile_no)<=12:
+                    data_check.mobile_no = mobile_no
+                else:
+                    messages.info(request,"Please enter valid mobile number (max length 12)")
+                    return redirect('/')
+            except:
+                data_check.address= address
+                if len(mobile_no)<=12:
+                    data_check.mobile_no = mobile_no
+                else:
+                    messages.info(request,"Please enter valid mobile number (max length 12)")
+                    return redirect('/')
+            data_check.save()
+        else:
+            try:
+                 
+                if len(mobile_no)<=12:
+                    ext_data = Extended_user(user=predata, mobile_no = mobile_no, address= address)  
+                else:
+                    messages.info(request,"Please enter valid mobile number (max length 12)")
+                    return redirect('/')
+            except:
+                if len(mobile_no)<=12:
+                    ext_data = Extended_user(user=predata, mobile_no = mobile_no, address= address) 
+                else:
+                    messages.info(request,"Please enter valid mobile number (max length 12)")
+                    return redirect('/')
+            ext_data.save()
+                   
+        predata.save()   
+
+        messages.info(request,"Your account details successfully updated")
+
+        return redirect('/')
+    return render(request, "index.html")

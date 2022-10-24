@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # for rich text
 from ckeditor.fields import RichTextField
@@ -47,3 +48,14 @@ class Deal(models.Model):
 
     def __str__(self):
         return self.name
+
+# Extended user
+class Extended_user(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    mobile_no = models.CharField(max_length=12)
+    address = models.CharField(max_length=500)
+    # user_image = CloudinaryField('profile_img')
+    # user_image = models.ImageField(upload_to='profile_img', default="/assets/assets/images/profile_photo.jpg")
+
+    def __str__(self):
+        return self.user.first_name

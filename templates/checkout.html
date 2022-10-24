@@ -225,23 +225,20 @@
 							<div class="information-wrapper">
 								<div class="first-row">
 									<div class="controls">
-										<input class="billing-address-name" type="text" name="name" placeholder="Full Name" required="">
+										<input class="billing-address-name" type="text" name="name" placeholder="Full Name" value="{{user.first_name}}" required="">
 									</div>
 									<div class="w3_agileits_card_number_grids">
 										<div class="w3_agileits_card_number_grid_left">
 											<div class="controls">
-												<input type="text" placeholder="Mobile Number" name="number" required="">
+												<input type="text" placeholder="Mobile Number" name="number" value="{{user.extended_user.mobile_no}}" required="">
 											</div>
 										</div>
 										<div class="w3_agileits_card_number_grid_right">
 											<div class="controls">
-												<input type="text" placeholder="Landmark" name="landmark" required="">
+												<input type="text" placeholder="Address" name="address" value="{{user.extended_user.address}}" required="">
 											</div>
 										</div>
 										<div class="clear"> </div>
-									</div>
-									<div class="controls">
-										<input type="text" placeholder="Town/City" name="city" required="">
 									</div>
 									<div class="controls">
 										<select class="option-w3ls">
@@ -258,7 +255,7 @@
 						</div>
 					</form>
 					<div class="checkout-right-basket">
-						<a href="payment.html">Make a Payment
+						<a href="/payment">Make a Payment
 							<span class="fa fa-hand-o-right" aria-hidden="true"></span>
 						</a>
 					</div>
