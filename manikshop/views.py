@@ -13,7 +13,7 @@ from .models import ProductDetails
 
 
 from django.shortcuts import render
-from .models import SubCategory, Category, Extended_user,Deal
+from .models import SubCategory, Category, Extended_user,Deal, Subscription
 from django.http import HttpResponse
 import json
 
@@ -229,50 +229,28 @@ def search(request,search_type,id):
 
 
 def about(request):
-    all_categories= Category.objects.all()
-    sub_categories= SubCategory.objects.all()
-    return render(request, "about.html", {"all_categories":all_categories,"sub_categories":sub_categories})
+    return render(request, "about.html", {})
 
 def contact(request):
-    all_categories= Category.objects.all()
-    sub_categories= SubCategory.objects.all()
-    return render(request, "contact.html", {"all_categories":all_categories,"sub_categories":sub_categories})
+    return render(request, "contact.html", {})
 
 def checkout(request):
-    products = ProductDetails.objects.all()
-    all_categories= Category.objects.all()
-    sub_categories= SubCategory.objects.all()
-    return render(request, "checkout.html", {"all_categories":all_categories,"sub_categories":sub_categories})
+    return render(request, "checkout.html", {})
 
 def faqs(request):
-    products = ProductDetails.objects.all()
-    all_categories= Category.objects.all()
-    sub_categories= SubCategory.objects.all()
-    return render(request, "faqs.html", {"all_categories":all_categories,"sub_categories":sub_categories})
+    return render(request, "faqs.html", {})
 
 def help(request):
-    products = ProductDetails.objects.all()
-    all_categories= Category.objects.all()
-    sub_categories= SubCategory.objects.all()
-    return render(request, "help.html", {"all_categories":all_categories,"sub_categories":sub_categories})
+    return render(request, "help.html", {})
 
 def terms(request):
-    products = ProductDetails.objects.all()
-    all_categories= Category.objects.all()
-    sub_categories= SubCategory.objects.all()
-    return render(request, "terms.html", {"all_categories":all_categories,"sub_categories":sub_categories})
+    return render(request, "terms.html", {})
 
 def payment(request):
-    products = ProductDetails.objects.all()
-    all_categories= Category.objects.all()
-    sub_categories= SubCategory.objects.all()
-    return render(request, "payment.html", {"all_categories":all_categories,"sub_categories":sub_categories})
+    return render(request, "payment.html", {})
 
 def privacy(request):
-    products = ProductDetails.objects.all()
-    all_categories= Category.objects.all()
-    sub_categories= SubCategory.objects.all()
-    return render(request, "privacy.html", {"all_categories":all_categories,"sub_categories":sub_categories})
+    return render(request, "privacy.html", {})
 
 def signup(request):
     if request.method== "POST":
@@ -406,3 +384,21 @@ def profile(request):
 
         return redirect('/')
     return render(request, "index.html")
+
+
+def subscription(request):
+    if request.method== "POST":
+        if request.user.is_authenticated:
+            predata = User.objects.get(id=request.user.id)
+            name= predata.first_name
+        else:
+            temp_name = request.POST['email']
+            name = temp_name.split('@')[0]
+        email = request.POST['email']
+        sub_data = Subscription(name=name, email = email, date= datetime.date.today())
+        sub_data.save()
+        messages.info(request,"Your Email is added to our subscribers list, Thank You!")
+        
+        return redirect("/")
+    return redirect("/")
+

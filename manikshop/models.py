@@ -1,3 +1,4 @@
+from unittest.util import _MAX_LENGTH
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -59,3 +60,12 @@ class Extended_user(models.Model):
 
     def __str__(self):
         return self.user.first_name
+
+# Subscription table
+class Subscription(models.Model):
+    name = models.CharField(max_length=20)
+    email = models.EmailField()
+    date = models.DateField()
+
+    def __str__(self):
+        return self.name
