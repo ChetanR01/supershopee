@@ -1,11 +1,11 @@
 from django.contrib import admin
 from django.contrib.auth.models import User
-from .models import Category,SubCategory,ProductDetails, Deal, Extended_user, Subscription
+from .models import Category,SubCategory,ProductDetails, Deal, Extended_user, Subscription, Order, Cart
 from django.contrib.auth.admin import UserAdmin
 
 # Register your models here.
 admin.site.register(Category)
-# admin.site.register(SubCategory)
+admin.site.register(Cart)
 # admin.site.register(ProductDetails)
 # admin.site.register(Deal)
 
@@ -31,7 +31,15 @@ admin.site.register(SubCategory, SubCategoryAdmin)
 class ProductDetailsAdmin(admin.ModelAdmin):
     list_display = ['name','price','mrp','category','trending']
     list_editable = ['price','mrp','trending']
+    search_fields = ('name', 'product_details')
+    list_filter = ('category',)
 admin.site.register(ProductDetails, ProductDetailsAdmin)
+
+# TO Modify Order view for admin
+class OrderAdmin(admin.ModelAdmin):
+    list_display = ['cutomer_name','date','address','mobile_no','order_status', 'payment_status']
+    # list_editable = ['price','mrp','trending']
+admin.site.register(Order, OrderAdmin)
 
 # TO Modify Deals view for admin
 class DealAdmin(admin.ModelAdmin):

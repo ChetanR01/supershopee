@@ -1,5 +1,5 @@
 import datetime
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User, auth 
 from django.contrib import messages
@@ -13,7 +13,7 @@ from .models import ProductDetails
 
 
 from django.shortcuts import render
-from .models import SubCategory, Category, Extended_user,Deal, Subscription
+from .models import SubCategory, Category, Extended_user,Deal, Subscription, Cart
 from django.http import HttpResponse
 import json
 
@@ -44,7 +44,6 @@ def product(request):
     except EmptyPage:
         page_obj=p.page(p.num_pages)
 
-    print(len(products))
     for product in page_obj:
         print(product)
     if len(page_obj) <= 3:
@@ -88,9 +87,6 @@ def deal_product(request,id):
     except EmptyPage:
         page_obj=p.page(p.num_pages)
 
-    print(len(products))
-    for product in page_obj:
-        print(product)
     if len(page_obj) <= 3:
         no_col= 1
     elif len(page_obj) <= 6:
@@ -140,9 +136,6 @@ def default_search(request):
     except EmptyPage:
         page_obj=p.page(p.num_pages)
 
-    print(len(products))
-    for product in page_obj:
-        print(product)
     if len(page_obj) <= 3:
         no_col= 1
     elif len(page_obj) <= 6:
@@ -177,9 +170,7 @@ def search(request,search_type,id):
         except EmptyPage:
             page_obj=p.page(p.num_pages)
 
-        print(len(products))
-        for product in page_obj:
-            print(product)
+
         if len(page_obj) <= 3:
             no_col= 1
         elif len(page_obj) <= 6:
@@ -207,9 +198,6 @@ def search(request,search_type,id):
         except EmptyPage:
             page_obj=p.page(p.num_pages)
 
-        print(len(products))
-        for product in page_obj:
-            print(product)
         if len(page_obj) <= 3:
             no_col= 1
         elif len(page_obj) <= 6:
@@ -227,6 +215,41 @@ def search(request,search_type,id):
         return render(request, "search.html", {"all_categories":all_categories,"sub_categories":sub_categories,"products":page_obj,"no_col":no_col,"deals":deals})
         
 
+# add item to cart
+def add_cart(request,id):
+    if request.method== "POST":
+        if request.user.is_authenticated:
+            try:
+                my_cart = Cart.objects.get(name=request.user)
+                if my_cart:
+                    my_cart.products.add(id)
+                    messages.info(request,"Item Added to Cart")
+                    my_cart.save()
+            except:
+                new_cart = Cart.objects.create(name=request.user)
+                new_cart.products.add(id)
+                messages.info(request,"Item Added to Cart")
+                new_cart.save()
+            next = request.POST.get('next', '/')
+            return HttpResponseRedirect(next)
+        else:
+            messages.info(request, "Please login before adding products to cart")
+            next = request.POST.get('next', '/')
+            return HttpResponseRedirect(next)
+            
+
+    next = request.POST.get('next', '/')
+    return HttpResponseRedirect(next)
+
+# remove item from cart
+def remove_cart(request,id):
+    if request.user.is_authenticated:
+        my_cart = Cart.objects.get(name=request.user)
+        if my_cart:
+            my_cart.products.remove(id)
+            messages.info(request,"Item Removed from Cart")
+            my_cart.save()
+        return redirect("/checkout")
 
 def about(request):
     return render(request, "about.html", {})
@@ -235,7 +258,12 @@ def contact(request):
     return render(request, "contact.html", {})
 
 def checkout(request):
-    return render(request, "checkout.html", {})
+    if request.user.is_authenticated:
+        cart = Cart.objects.filter(name=request.user.id)
+        return render(request, "checkout.html", {"cart":cart})
+    else:
+        messages.info(request, "Please login to check your cart")
+        return render(request, "checkout.html", {})
 
 def faqs(request):
     return render(request, "faqs.html", {})
@@ -260,10 +288,6 @@ def signup(request):
         password = request.POST['password']
         confirm_pass = request.POST['confirm_pass']
 
-        print("Name =",name)
-        print("Email =",email)
-        print("Pass =",password)
-        print("Confirm Pass =",confirm_pass)
         
         if password == confirm_pass:
             if User.objects.filter(username=username).exists():
@@ -331,58 +355,62 @@ def logout(request):
 
 def profile(request):
     if request.method== "POST":
-        predata = User.objects.get(id=request.user.id)
-        name = request.POST['name']
-        email = request.POST['email']
-        mobile_no = request.POST['mobile_no']
-        address = request.POST['address']
-        predata.first_name = name
-        predata.email = email
-        predata.username = email
+        if request.user.is_authenticated:
+            predata = User.objects.get(id=request.user.id)
+            name = request.POST['name']
+            email = request.POST['email']
+            mobile_no = request.POST['mobile_no']
+            address = request.POST['address']
+            predata.first_name = name
+            predata.email = email
+            predata.username = email
 
-        try:
-            data_check =  Extended_user.objects.get(user = predata)
-            print("data checker", data_check)
-        except:
-            data_check = False
-        # if mobile no. or photo already uploaded
-        if data_check:
             try:
-                data_check.address = address
-                if len(mobile_no)<=12:
-                    data_check.mobile_no = mobile_no
-                else:
-                    messages.info(request,"Please enter valid mobile number (max length 12)")
-                    return redirect('/')
+                data_check =  Extended_user.objects.get(user = predata)
+                print("data checker", data_check)
             except:
-                data_check.address= address
-                if len(mobile_no)<=12:
-                    data_check.mobile_no = mobile_no
-                else:
-                    messages.info(request,"Please enter valid mobile number (max length 12)")
-                    return redirect('/')
-            data_check.save()
+                data_check = False
+            # if mobile no. or photo already uploaded
+            if data_check:
+                try:
+                    data_check.address = address
+                    if len(mobile_no)<=12:
+                        data_check.mobile_no = mobile_no
+                    else:
+                        messages.info(request,"Please enter valid mobile number (max length 12)")
+                        return redirect('/')
+                except:
+                    data_check.address= address
+                    if len(mobile_no)<=12:
+                        data_check.mobile_no = mobile_no
+                    else:
+                        messages.info(request,"Please enter valid mobile number (max length 12)")
+                        return redirect('/')
+                data_check.save()
+            else:
+                try:
+                    
+                    if len(mobile_no)<=12:
+                        ext_data = Extended_user(user=predata, mobile_no = mobile_no, address= address)  
+                    else:
+                        messages.info(request,"Please enter valid mobile number (max length 12)")
+                        return redirect('/')
+                except:
+                    if len(mobile_no)<=12:
+                        ext_data = Extended_user(user=predata, mobile_no = mobile_no, address= address) 
+                    else:
+                        messages.info(request,"Please enter valid mobile number (max length 12)")
+                        return redirect('/')
+                ext_data.save()
+                    
+            predata.save()   
+
+            messages.info(request,"Your account details successfully updated")
+            return redirect('/')
         else:
-            try:
-                 
-                if len(mobile_no)<=12:
-                    ext_data = Extended_user(user=predata, mobile_no = mobile_no, address= address)  
-                else:
-                    messages.info(request,"Please enter valid mobile number (max length 12)")
-                    return redirect('/')
-            except:
-                if len(mobile_no)<=12:
-                    ext_data = Extended_user(user=predata, mobile_no = mobile_no, address= address) 
-                else:
-                    messages.info(request,"Please enter valid mobile number (max length 12)")
-                    return redirect('/')
-            ext_data.save()
-                   
-        predata.save()   
+            messages.info(request,"Please login to check/update your profile")
+            return redirect('/')
 
-        messages.info(request,"Your account details successfully updated")
-
-        return redirect('/')
     return render(request, "index.html")
 
 

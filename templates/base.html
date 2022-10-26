@@ -104,7 +104,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 							<span class="fa fa-user" aria-hidden="true"></span>{{user.first_name}}</a>
 					</li>
 					<li>
-						<a href="logout" >
+						<a href="/logout" >
 							<span class="fa fa-sign-out" aria-hidden="true"></span>LogOut</a>
 					</li>
 					{% endif %}
@@ -123,12 +123,10 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 				<!-- cart details -->
 				<div class="top_nav_right">
 					<div class="wthreecartaits wthreecartaits2 cart cart box_1">
-						<form action="#" method="post" class="last">
+						<form action="/checkout" method="post" class="last">
 							{% csrf_token %}
-							<input type="hidden" name="cmd" value="_cart">
-							<input type="hidden" name="display" value="1">
 							<button class="w3view-cart" type="submit" name="submit" value="">
-								<i class="fa fa-cart-arrow-down" aria-hidden="true"></i>
+								<i class="fa fa-cart-arrow-down" aria-hidden="true"><sup style="color: black;">{{item_count}}</sup></i>
 							</button>
 						</form>
 					</div>
@@ -427,7 +425,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 					<div class="col-xs-6 footer-grids">
 						<h3>Categories</h3>
 						<ul>
-							{% for category in categories %}
+							{% for category in all_categories %}
 							{% if forloop.counter|divisibleby:2 %}
 							<li>
 								<a href="/search/category/{{category.id}}">{{category.name}}</a>
@@ -438,7 +436,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 					</div>
 					<div class="col-xs-6 footer-grids agile-secomk">
 						<ul>
-							{% for category in categories %}
+							{% for category in all_categories %}
 							{% if forloop.counter|divisibleby:2 %}
 							{% else %}
 							<li>
@@ -686,7 +684,8 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 	<div class="copy-right">
 		<div class="container">
 			<p>© 2017 Grocery Shoppy. All rights reserved | Design by
-				<a href="http://w3layouts.com"> W3layouts.</a>
+				<a href="http://w3layouts.com"> W3layouts.</a> | Developed by
+				<a href="https://crrathod.herokuapp.com"> Chetan Rathod</a>
 			</p>
 		</div>
 	</div>

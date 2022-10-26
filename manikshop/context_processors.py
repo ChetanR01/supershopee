@@ -1,8 +1,13 @@
 from unicodedata import category
-from .models import Category, SubCategory
+from .models import Category, SubCategory, Cart
 
 def pass_cat_nd_sub_cat(request):
-    categories = Category.objects.all()
-    subcategories = SubCategory.objects.all()
+    all_categories = Category.objects.all()
+    sub_categories = SubCategory.objects.all()
+    if request.user.is_authenticated:
+        cart = Cart.objects.get(name=request.user.id)
+        itemscount= cart.products.all().count()
+    else:
+        itemscount = 0
 
-    return {"categories":categories, "subcategories":subcategories}
+    return {"all_categories":all_categories, "sub_categories":sub_categories,"item_count":itemscount}
