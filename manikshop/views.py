@@ -26,7 +26,7 @@ def get_subcategory(request):
 # Create your views here.
 def index(request):
     products = ProductDetails.objects.all()
-    deals = Deal.objects.all()
+    deals = Deal.objects.filter(end_date__gte=datetime.datetime.now())
     all_categories= Category.objects.all()
     sub_categories= SubCategory.objects.all()
     return render(request, "index.html", {"all_categories":all_categories,"sub_categories":sub_categories,"products":products,"deals":deals})

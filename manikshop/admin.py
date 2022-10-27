@@ -37,7 +37,7 @@ admin.site.register(ProductDetails, ProductDetailsAdmin)
 
 # TO Modify Order view for admin
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ['order_id','date','product','address','order_status']
+    list_display = ['order_id','date','product','quantity','total_cost','order_status']
     list_filter = ('order_id',)
     # list_editable = ['price','mrp','trending']
 admin.site.register(Order, OrderAdmin)
