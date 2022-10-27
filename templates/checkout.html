@@ -17,7 +17,7 @@
 			<div class="container">
 				<ul class="w3_short">
 					<li>
-						<a href="index.html">Home</a>
+						<a href="/">Home</a>
 						<i>|</i>
 					</li>
 					<li>Checkout</li>
@@ -43,6 +43,8 @@
 					<span>{{item_count}} Products</span>
 				</h4>
 				<div class="table-responsive">
+					<form method="post" action="/place-order">
+						{% csrf_token %}
 					<table class="timetable_sub">
 						<thead>
 							<tr>
@@ -50,11 +52,11 @@
 								<th>Product</th>
 								<th>Quality</th>
 								<th>Product Name</th>
-
 								<th>Price</th>
 								<th>Remove</th>
 							</tr>
 						</thead>
+						
 						<tbody>
 							{% for item in cart %}
 							{% for product in item.products.all %}
@@ -68,12 +70,13 @@
 								<td class="invert">
 									<div class="quantity">
 										<div class="quantity-select">
-											<input type="number" id="quantity" name="quantity" min="1" value="1">
+											<input type="number" id="quantity" name="quantity{{forloop.counter}}" min="1" value="1">
 										</div>
 									</div>
 								</td>
-								<td class="invert"><input type="text" id="product_name" name="product_name" value="{{product.name}}" readonly></td>
-								<td class="invert">₹ <input type="text" id="product_price" name="product_price" value="{{product.price}}" readonly></td>
+								<input type="hidden" id="product_id" name="product{{forloop.counter}}" value="{{product.id}}">
+								<td class="invert">{{product.name}}</td>
+								<td class="invert">₹ {{product.price}}</td>
 								<td class="invert">
 									<div class="rem">
 										
@@ -85,15 +88,17 @@
 							</tr>
 							{% endfor %}
 							{% endfor %}
-							
 						</tbody>
 					</table>
+					<input type="hidden" name="item_count" value="{{item_count}}" class="button" />
+					<input type="submit" name="submit" value="Place Order" class="btn btn-primary" style="margin-top: 2em;height: 4em;width: 20em;"/>
+				</form>
 				</div>
 			</div>
 			<div class="checkout-left">
 				<div class="address_form_agile">
-					<h4>Add a new Details</h4>
-					<form action="payment.html" method="post" class="creditly-card-form agileinfo_form">
+					<h4>Your Delivary Address</h4>
+					<form action="/profile" method="post" class="creditly-card-form agileinfo_form">
 						<div class="creditly-wrapper wthree, w3_agileits_wrapper">
 							<div class="information-wrapper">
 								<div class="first-row">
@@ -113,17 +118,8 @@
 										</div>
 										<div class="clear"> </div>
 									</div>
-									<div class="controls">
-										<select class="option-w3ls">
-											<option>Select Address type</option>
-											<option>Office</option>
-											<option>Home</option>
-											<option>Commercial</option>
-
-										</select>
-									</div>
 								</div>
-								<button class="submit check_out">Delivery to this Address</button>
+								<button class="submit check_out">Update Delivary Address</button>
 							</div>
 						</div>
 					</form>

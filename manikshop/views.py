@@ -1,4 +1,5 @@
 import datetime
+from traceback import print_tb
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User, auth 
@@ -13,7 +14,7 @@ from .models import ProductDetails
 
 
 from django.shortcuts import render
-from .models import SubCategory, Category, Extended_user,Deal, Subscription, Cart
+from .models import SubCategory, Category, Extended_user,Deal, Subscription, Cart, Order
 from django.http import HttpResponse
 import json
 
@@ -66,9 +67,10 @@ def product(request):
 
 def deal_product(request,id):
     deals = Deal.objects.all()
-    deal_product = Deal.objects.filter(id=id)
-    products = ProductDetails.objects.all()
+    deal_product = Deal.objects.get(id=id)
+    products = deal_product.products.all()
 
+    print("Products",products)
     # print("Deal Products",deal_product)
     # print("Deal Products. products",deal_product)
     # for products in deal_product:
@@ -77,7 +79,7 @@ def deal_product(request,id):
     #     print("No product",no_pro)
 
 
-    p = Paginator(deal_product, 21)
+    p = Paginator(products, 21)
     page_no= request.GET.get('page')
 
     try:
@@ -103,7 +105,7 @@ def deal_product(request,id):
         no_col= 7
     all_categories= Category.objects.all()
     sub_categories= SubCategory.objects.all()
-    return render(request, "deal-product.html", {"all_categories":all_categories,"sub_categories":sub_categories,"products":deal_product,"no_col":no_col,"deals":deals,"deal_product":deal_product})
+    return render(request, "deal-product.html", {"all_categories":all_categories,"sub_categories":sub_categories,"products":page_obj,"no_col":no_col,"deals":deals,"deal_product":deal_product})
 
 def single(request, id):
     product = ProductDetails.objects.filter(id=id)
@@ -217,7 +219,7 @@ def search(request,search_type,id):
 
 # add item to cart
 def add_cart(request,id):
-    if request.method== "POST":
+    if request.method == "POST":
         if request.user.is_authenticated:
             try:
                 my_cart = Cart.objects.get(name=request.user)
@@ -250,6 +252,48 @@ def remove_cart(request,id):
             messages.info(request,"Item Removed from Cart")
             my_cart.save()
         return redirect("/checkout")
+
+# track order
+def track_order(request):
+    if request.method == "POST":
+        if request.user.is_authenticated:
+            order_id = request.POST['order_id']
+            order_date = request.POST['order_date']
+            print("Order date", order_date)
+            orders = Order.objects.filter(order_id=order_id)
+            for order in orders:
+                one_order = order
+            status = one_order.order_status
+            print("Status",status)
+            messages.info(request, f"Your Order status is '{status}'")
+        return redirect("/")
+
+# to place order item from cart
+def place_order(request):
+    if request.method== "POST":
+        item_count = request.POST['item_count']
+        product_dict = {}
+        for i in range(1,int(item_count)+1):
+            product_dict[f"product{i}"]= request.POST[f'product{i}']
+            product_dict[f"quantity{i}"]= request.POST[f'quantity{i}']
+
+        from itertools import islice
+        values = product_dict.values()
+        length_to_split =  [2 for i in range(len(values)//2)]
+        Inputt = iter(values)
+        Output = [list(islice(Inputt, elem)) for elem in length_to_split]
+        # print(Output)
+        
+        for rec in Output:
+            product = ProductDetails.objects.get(id=int(rec[0]))
+            create_order = Order.objects.create(cutomer_name=request.user, date= datetime.datetime.now(), product= product, quantity= int(rec[1]))
+            create_order.save()
+        messages.info(request, "Order placed successfully!, Thank For Shopping With Us 🙂")
+            
+        # print("Product Dict is : ",product_dict)
+        
+        return redirect("/checkout")
+    return redirect("/checkout")
 
 def about(request):
     return render(request, "about.html", {})
@@ -297,28 +341,6 @@ def signup(request):
                 user = User.objects.create_user(username=username,password= password, email=email, first_name=name)
                 user.save()
                 messages.info(request,"Your have successfully created account, Login Now!")
-
-                # # to send welcome email
-                # raw_data= {
-                #     "name":name,
-                #     "email":email,
-                #     "username":username,
-                #     "password":password,
-                # }
-                # html_template= "email_signup.html"
-                # msg_for_new_user = render_to_string(html_template, context=raw_data)
-
-                # msg= EmailMessage(
-                #     "Your account is created successfully ",
-                #     msg_for_new_user,
-                #     'crrathod.tech@gmail.com' ,#from 
-                #     [f'{email}'] ,
-                # )
-
-                # msg.content_subtype ="html"
-                # msg.send()
-                               
-                # print(f"Email Sent to User on >. {email}")
 
                 return redirect('/')
 

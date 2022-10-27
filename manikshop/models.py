@@ -1,6 +1,5 @@
-from datetime import date
+from datetime import date, datetime
 from email.policy import default
-from unittest.util import _MAX_LENGTH
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -16,7 +15,7 @@ class Category(models.Model):
 # for Sub-category
 class SubCategory(models.Model):
     # category = models.ForeignKey(Category, on_delete=models.PROTECT)
-    category = models.ForeignKey(Category, related_name='souscategories', on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, related_name='subcategories', on_delete=models.CASCADE)
     name = models.CharField(max_length=50, unique=True)
     def __str__(self):
         return self.name
@@ -43,11 +42,14 @@ class ProductDetails(models.Model):
 # For Order Table
 class Order(models.Model):
     order_id = models.CharField(max_length=100, default="")
-    cutomer_name = models.CharField(max_length=100)
+    cutomer_name = models.ForeignKey(User,  related_name='cust_name', on_delete=models.CASCADE)
     date = models.DateTimeField()
     address = models.CharField(max_length= 500)
     mobile_no = models.CharField(max_length = 12)
-    order_list = models.ManyToManyField(to=ProductDetails, related_name="order_list", blank=False)
+    product = models.ForeignKey(ProductDetails,  related_name='product', on_delete=models.CASCADE)
+    quantity = models.IntegerField(default=1)
+    price = models.FloatField(default=1)
+    total_cost = models.FloatField(default=1)
     order_state_list = [
         ('pending', 'Pending'),
         ('cancelled', 'Cancelled'),
@@ -63,16 +65,48 @@ class Order(models.Model):
         ('confirm', 'Confirm') 
         ]
     payment_status = models.CharField(max_length=50, choices=payment_state_list, default="pending")
+
+    payment_method_list = [
+        ('cash', 'Cash On Delivery'),
+        ('prepaid', 'Pre-Paid'), 
+        ]
+    payment_method = models.CharField(max_length=100, choices=payment_method_list, default="cash")
     transaction_id = models.CharField(max_length=100)
 
     # Generate Order Id
     def get_order_id(self):
-        today = date.today()
-        no_date = str(today).split("-")
-        return f"{no_date[2]}{no_date[1]}{no_date[0]}{self.id}"
+        today = datetime.now()
+        date = today.strftime("%d")
+        hrs = today.strftime("%H")
+        min = today.strftime("%M")
+        return f"{date}{today.month}{today.year}{hrs}{min}{self.cutomer_name.id}"
+
+    # Get price
+    def get_price(self):
+        pro_id = ProductDetails.objects.get(id=self.product.id)
+        return pro_id.price
+
+    # Calculate total cost
+    def cal_total(self):
+        pro_id = ProductDetails.objects.get(id=self.product.id)
+        return pro_id.price * self.quantity
+
+    # Get Address
+    def get_address(self):
+        user = Extended_user.objects.get(id=self.cutomer_name.id)
+        return user.address
+
+    # Get Mobile No
+    def get_mobile_no(self):
+        user = Extended_user.objects.get(id=self.cutomer_name.id)
+        return user.mobile_no
 
     def save(self, *args, **kwargs):
         self.order_id = self.get_order_id()
+        self.price = self.get_price()
+        self.total_cost = self.cal_total()
+        self.address = self.get_address()
+        self.mobile_no = self.get_mobile_no()
         super(Order, self).save(*args, **kwargs)
 
     def __str__(self):

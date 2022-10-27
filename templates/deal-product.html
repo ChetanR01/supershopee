@@ -19,9 +19,7 @@
 						<a href="/">Home</a>
 						<i>|</i>
 					</li>
-					{% for deal in deal_product %}
-					<li>{{deal.name}}</li>
-					{% endfor %}
+					<li>{{deal_product.name}}</li>
 				</ul>
 			</div>
 		</div>
@@ -31,9 +29,8 @@
 	<div class="ads-grid">
 		<div class="container">
 			<!-- tittle heading -->
-			<h3 class="tittle-w3l">{% for deal in deal_product %}
-					{{deal.name}}
-					{% endfor %}
+			<h3 class="tittle-w3l">
+					{{deal_product.name}}
 				<span class="heading-style">
 					<i></i>
 					<i></i>
@@ -79,9 +76,8 @@
 			<div class="agileinfo-ads-display col-md-9 w3l-rightpro">
 				<div class="wrapper">
 					<!-- first section -->
-					{% for deal in deal_product %}
-					{% if forloop.first %}
-					{% for col in deal.products.all|columns:no_col %}
+					
+					{% for col in products|columns:no_col %}
 					<div class="product-sec1">
 						{% for product in col %}
 						<div class="col-xs-4 product-men">
@@ -120,8 +116,6 @@
 						
 						<div class="clearfix"></div>
 					</div>
-					{% endfor %}
-					{% endif %}
 					{% endfor %}
 					<!-- //first section -->
 					
