@@ -14,10 +14,11 @@ from .models import ProductDetails
 
 
 from django.shortcuts import render
-from .models import SubCategory, Category, Extended_user,Deal, Subscription, Cart, Order
+from .models import SubCategory, Category, Extended_user,Deal, Subscription, Cart, Order, Contact_form
 from django.http import HttpResponse
 import json
 
+# for base file
 def get_subcategory(request):
     id = request.GET.get('id', '')
     result = list(SubCategory.objects.filter(category_id=int(id)).values('id', 'name'))
@@ -45,8 +46,6 @@ def product(request):
     except EmptyPage:
         page_obj=p.page(p.num_pages)
 
-    for product in page_obj:
-        print(product)
     if len(page_obj) <= 3:
         no_col= 1
     elif len(page_obj) <= 6:
@@ -114,7 +113,6 @@ def single(request, id):
     related_products = ProductDetails.objects.filter(category=rel_category)
     all_categories= Category.objects.all()
     sub_categories= SubCategory.objects.all()
-    print("####", product)
     return render(request, "single.html", {"all_categories":all_categories,"sub_categories":sub_categories,"products":product,"related_products":related_products})
 
 def default_search(request):
@@ -258,14 +256,14 @@ def track_order(request):
     if request.method == "POST":
         if request.user.is_authenticated:
             order_id = request.POST['order_id']
-            order_date = request.POST['order_date']
-            print("Order date", order_date)
             orders = Order.objects.filter(order_id=order_id)
             for order in orders:
                 one_order = order
-            status = one_order.order_status
-            print("Status",status)
-            messages.info(request, f"Your Order status is '{status}'")
+            if orders:
+                status = one_order.order_status
+                messages.info(request, f"Your Order status is '{status}'")
+            else:
+                messages.info(request, f"No Order found for OrderID: {order_id}")
         return redirect("/")
 
 # to place order item from cart
@@ -288,10 +286,14 @@ def place_order(request):
             product = ProductDetails.objects.get(id=int(rec[0]))
             create_order = Order.objects.create(cutomer_name=request.user, date= datetime.datetime.now(), product= product, quantity= int(rec[1]))
             create_order.save()
-        messages.info(request, "Order placed successfully!, Thank For Shopping With Us 🙂")
-            
-        # print("Product Dict is : ",product_dict)
-        
+            # remove item from cart
+            my_cart = Cart.objects.get(name=request.user)
+            if my_cart:
+                my_cart.products.remove(product)
+                # messages.info(request,"Item Removed from Cart")
+            my_cart.save()
+
+        messages.info(request, "Order placed successfully!, Thank For Shopping With Us 🙂")        
         return redirect("/checkout")
     return redirect("/checkout")
 
@@ -301,13 +303,27 @@ def about(request):
 def contact(request):
     return render(request, "contact.html", {})
 
+def contact_form(request):
+    if request.method== "POST":
+        name = request.POST['name']
+        subject = request.POST['subject']
+        mobile_no = request.POST['mobile_no']
+        email = request.POST['email']
+        msg = request.POST['message']
+        contact = Contact_form.objects.create(name=name,subject=subject,mobile_no=mobile_no,email=email,message=msg)
+        contact.save()
+        messages.info(request, "Thank You for Contacting Us, We'll get back to you shortly")
+
+    return redirect("/")
+
 def checkout(request):
     if request.user.is_authenticated:
         cart = Cart.objects.filter(name=request.user.id)
         return render(request, "checkout.html", {"cart":cart})
     else:
         messages.info(request, "Please login to check your cart")
-        return render(request, "checkout.html", {})
+        # return render(request, "checkout.html", {})
+    return redirect("/checkout")
 
 def faqs(request):
     return render(request, "faqs.html", {})
@@ -432,6 +448,62 @@ def profile(request):
         else:
             messages.info(request,"Please login to check/update your profile")
             return redirect('/')
+
+    return render(request, "index.html")
+
+
+def update_address(request):
+    if request.method== "POST":
+        if request.user.is_authenticated:
+            predata = User.objects.get(id=request.user.id)
+            name = request.POST['name']
+            mobile_no = request.POST['mobile_no']
+            address = request.POST['address']
+            predata.first_name = name
+            try:
+                data_check =  Extended_user.objects.get(user = predata)
+            except:
+                data_check = False
+            # if mobile no. or photo already uploaded
+            if data_check:
+                try:
+                    data_check.address = address
+                    if len(mobile_no)<=12:
+                        data_check.mobile_no = mobile_no
+                    else:
+                        messages.info(request,"Please enter valid mobile number (max length 12)")
+                        return redirect('/checkout')
+                except:
+                    data_check.address= address
+                    if len(mobile_no)<=12:
+                        data_check.mobile_no = mobile_no
+                    else:
+                        messages.info(request,"Please enter valid mobile number (max length 12)")
+                        return redirect('/checkout')
+                data_check.save()
+            else:
+                try:
+                    
+                    if len(mobile_no)<=12:
+                        ext_data = Extended_user(user=predata, mobile_no = mobile_no, address= address)  
+                    else:
+                        messages.info(request,"Please enter valid mobile number (max length 12)")
+                        return redirect('/checkout')
+                except:
+                    if len(mobile_no)<=12:
+                        ext_data = Extended_user(user=predata, mobile_no = mobile_no, address= address) 
+                    else:
+                        messages.info(request,"Please enter valid mobile number (max length 12)")
+                        return redirect('/checkout')
+                ext_data.save()
+                    
+            predata.save()   
+
+            messages.info(request,"Your address successfully updated")
+            return redirect('/checkout')
+        else:
+            messages.info(request,"Please login to check/update your profile")
+            return redirect('/checkout')
 
     return render(request, "index.html")
 

@@ -78,8 +78,7 @@
 								<td class="invert">{{product.name}}</td>
 								<td class="invert">₹ {{product.price}}</td>
 								<td class="invert">
-									<div class="rem">
-										
+									<div class="rem">										
 										<button type="button" class="btn btn-default btn-sm" onclick="location.href='/remove-cart/{{product.id}}' ">
 											<span class="glyphicon glyphicon-trash"></span>
 										</button>
@@ -91,14 +90,16 @@
 						</tbody>
 					</table>
 					<input type="hidden" name="item_count" value="{{item_count}}" class="button" />
-					<input type="submit" name="submit" value="Place Order" class="btn btn-primary" style="margin-top: 2em;height: 4em;width: 20em;"/>
+					<input type="submit" name="submit" value="Place Order (COD)" class="btn btn-primary" style="margin-top: 2em;height: 4em;width: 20em;"/>
+					<input type="submit" name="submit" value="Place Order (Pay Online)" class="btn btn-primary" style="margin-top: 2em;height: 4em;width: 20em;"/>
 				</form>
 				</div>
 			</div>
 			<div class="checkout-left">
 				<div class="address_form_agile">
 					<h4>Your Delivary Address</h4>
-					<form action="/profile" method="post" class="creditly-card-form agileinfo_form">
+					<form action="/update-address" method="post" class="creditly-card-form agileinfo_form">
+						{% csrf_token %}
 						<div class="creditly-wrapper wthree, w3_agileits_wrapper">
 							<div class="information-wrapper">
 								<div class="first-row">
@@ -108,7 +109,7 @@
 									<div class="w3_agileits_card_number_grids">
 										<div class="w3_agileits_card_number_grid_left">
 											<div class="controls">
-												<input type="text" placeholder="Mobile Number" name="number" value="{{user.extended_user.mobile_no}}" required="">
+												<input type="text" placeholder="Mobile Number" name="mobile_no" value="{{user.extended_user.mobile_no}}" required="">
 											</div>
 										</div>
 										<div class="w3_agileits_card_number_grid_right">

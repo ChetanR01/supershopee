@@ -74,11 +74,14 @@ class Order(models.Model):
     transaction_id = models.CharField(max_length=100)
 
     # Generate Order Id
+    update_order_id = models.BooleanField(default=True)
+
     def get_order_id(self):
         today = datetime.now()
         date = today.strftime("%d")
         hrs = today.strftime("%H")
         min = today.strftime("%M")
+        self.update_order_id=False 
         return f"{date}{today.month}{today.year}{hrs}{min}{self.cutomer_name.id}"
 
     # Get price
@@ -102,7 +105,8 @@ class Order(models.Model):
         return user.mobile_no
 
     def save(self, *args, **kwargs):
-        self.order_id = self.get_order_id()
+        if self.update_order_id:
+            self.order_id = self.get_order_id()
         self.price = self.get_price()
         self.total_cost = self.cal_total()
         self.address = self.get_address()
@@ -151,5 +155,17 @@ class Subscription(models.Model):
     email = models.EmailField()
     date = models.DateField()
 
+    def __str__(self):
+        return self.name
+
+# Contact Forms
+class Contact_form(models.Model):
+    name = models.CharField(max_length=300)
+    subject= models.CharField(max_length=500)
+    mobile_no = models.CharField(max_length=12)
+    email = models.CharField(max_length=200)
+    message = models.TextField()
+    date= models.DateTimeField(default=datetime.now())
+    
     def __str__(self):
         return self.name

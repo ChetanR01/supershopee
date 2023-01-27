@@ -39,12 +39,16 @@
 			<div class="contact agileits">
 				<div class="contact-agileinfo">
 					<div class="contact-form wthree">
-						<form action="#" method="post">
+						<form action="/contact-form" method="post">
+							{% csrf_token %}
 							<div class="">
 								<input type="text" name="name" placeholder="Name" required="">
 							</div>
 							<div class="">
 								<input class="text" type="text" name="subject" placeholder="Subject" required="">
+							</div>
+							<div class="">
+								<input class="mobile_no" type="text" name="mobile_no" placeholder="Mobile Number" required="">
 							</div>
 							<div class="">
 								<input class="email" type="email" name="email" placeholder="Email" required="">

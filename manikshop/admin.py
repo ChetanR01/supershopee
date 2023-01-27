@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.models import User
-from .models import Category,SubCategory,ProductDetails, Deal, Extended_user, Subscription, Order, Cart
+from .models import Category,SubCategory,ProductDetails, Deal, Extended_user, Subscription, Order, Cart, Contact_form
 from django.contrib.auth.admin import UserAdmin
 
 # Register your models here.
@@ -52,3 +52,9 @@ admin.site.register(Deal, DealAdmin)
 class SubscriptionAdmin(admin.ModelAdmin):
     list_display = ['name','email']
 admin.site.register(Subscription, SubscriptionAdmin)
+
+
+# Conatct form data
+class ContactFormAdmin(admin.ModelAdmin):
+    list_display = ['name','date','subject']
+admin.site.register(Contact_form, ContactFormAdmin)
