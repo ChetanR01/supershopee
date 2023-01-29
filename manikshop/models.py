@@ -96,12 +96,12 @@ class Order(models.Model):
 
     # Get Address
     def get_address(self):
-        user = Extended_user.objects.get(id=self.cutomer_name.id)
+        user = Extended_user.objects.get(user=self.cutomer_name.id)
         return user.address
 
     # Get Mobile No
     def get_mobile_no(self):
-        user = Extended_user.objects.get(id=self.cutomer_name.id)
+        user = Extended_user.objects.get(user=self.cutomer_name.id)
         return user.mobile_no
 
     def save(self, *args, **kwargs):

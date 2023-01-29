@@ -249,7 +249,7 @@ def remove_cart(request,id):
             my_cart.products.remove(id)
             messages.info(request,"Item Removed from Cart")
             my_cart.save()
-        return redirect("/checkout")
+        return redirect("/cart")
 
 # track order
 def track_order(request):
@@ -266,8 +266,8 @@ def track_order(request):
                 messages.info(request, f"No Order found for OrderID: {order_id}")
         return redirect("/")
 
-# to place order item from cart
-def place_order(request):
+# to create order item from cart
+def create_order(request):
     if request.method== "POST":
         item_count = request.POST['item_count']
         product_dict = {}
@@ -280,22 +280,93 @@ def place_order(request):
         length_to_split =  [2 for i in range(len(values)//2)]
         Inputt = iter(values)
         Output = [list(islice(Inputt, elem)) for elem in length_to_split]
-        # print(Output)
+        # print("@@@@@@@@@#########",Output)
         
         for rec in Output:
             product = ProductDetails.objects.get(id=int(rec[0]))
             create_order = Order.objects.create(cutomer_name=request.user, date= datetime.datetime.now(), product= product, quantity= int(rec[1]))
             create_order.save()
-            # remove item from cart
-            my_cart = Cart.objects.get(name=request.user)
-            if my_cart:
-                my_cart.products.remove(product)
-                # messages.info(request,"Item Removed from Cart")
-            my_cart.save()
+            
+        if Output:
+            messages.info(request, "Order placed successfully!, Thank For Shopping With Us 🙂")        
+            return redirect(f"/checkout/{create_order.order_id}")
+        else:
+            messages.info(request, "Your Cart🛒 is Empty!  Please add products to cart🛒")        
+            return redirect("/cart")
+    return redirect("/cart")
 
-        messages.info(request, "Order placed successfully!, Thank For Shopping With Us 🙂")        
-        return redirect("/checkout")
-    return redirect("/checkout")
+    # Checkout Order
+def checkout(request,id):
+    orders= Order.objects.filter(order_id=id)
+    grand_total=0
+    for order in orders:
+        grand_total+=order.total_cost
+    return render(request, "checkout.html", {"orders":orders,"grand_total":grand_total,"order_id":id})
+
+    # Order History
+def order_history(request):
+    orders= Order.objects.filter(cutomer_name=request.user.id)
+    return render(request, "order_history.html", {"orders":orders})
+
+    # confirm Order
+def confirm_order(request,mode,id):
+    orders= Order.objects.filter(order_id=id)
+    product_list=[]
+    if mode=="cod":
+        for order in orders:
+            order.order_status="confirm"
+            order.transaction_id="Not Applicable"
+            order.save()
+            product_list.append(order.product.id)
+        messages.info(request, f"Your Order(Order Id:{id}) is Confirm")
+        # return redirect("/")
+            
+    elif mode=="online":
+        for order in orders:
+            order.order_status="confirm"
+            order.payment_method="prepaid"
+            order.payment_status="confirm"
+            order.transaction_id="TRANSACTION_ID"
+            order.save()
+        # return redirect("/")
+    else: 
+        print("Something went wrong")
+        # return redirect("/cart")
+    # remove item from cart
+    my_cart = Cart.objects.get(name=request.user)
+    if my_cart:
+        for product_id in product_list:
+            my_cart.products.remove(product_id)
+    my_cart.save()
+
+    return redirect("/order-history")
+
+
+from manikshop.utils import render_to_pdf
+
+
+def generate_report(request,order_id):
+    template_name = "invoice_format.html"
+    user=User.objects.get(id=request.user.id)
+    orders = Order.objects.filter(order_id=order_id)
+    grand_total=0
+    for order in orders:
+        grand_total+=order.total_cost
+        rep_order=order
+
+    return render_to_pdf(
+        template_name,
+        {
+            "user":user,
+            "rep_order":rep_order,
+            "order_id":order_id,
+            "orders": orders,
+            "grand_total":grand_total,
+
+            
+        },
+    )
+
 
 def about(request):
     return render(request, "about.html", {})
@@ -316,20 +387,17 @@ def contact_form(request):
 
     return redirect("/")
 
-def checkout(request):
+def cart(request):
     if request.user.is_authenticated:
         cart = Cart.objects.filter(name=request.user.id)
-        return render(request, "checkout.html", {"cart":cart})
+        return render(request, "cart.html", {"cart":cart})
     else:
         messages.info(request, "Please login to check your cart")
-        # return render(request, "checkout.html", {})
-    return redirect("/checkout")
+        # return render(request, "cart.html", {})
+    return redirect("/cart")
 
 def faqs(request):
     return render(request, "faqs.html", {})
-
-def help(request):
-    return render(request, "help.html", {})
 
 def terms(request):
     return render(request, "terms.html", {})
@@ -472,14 +540,14 @@ def update_address(request):
                         data_check.mobile_no = mobile_no
                     else:
                         messages.info(request,"Please enter valid mobile number (max length 12)")
-                        return redirect('/checkout')
+                        return redirect('/cart')
                 except:
                     data_check.address= address
                     if len(mobile_no)<=12:
                         data_check.mobile_no = mobile_no
                     else:
                         messages.info(request,"Please enter valid mobile number (max length 12)")
-                        return redirect('/checkout')
+                        return redirect('/cart')
                 data_check.save()
             else:
                 try:
@@ -488,22 +556,22 @@ def update_address(request):
                         ext_data = Extended_user(user=predata, mobile_no = mobile_no, address= address)  
                     else:
                         messages.info(request,"Please enter valid mobile number (max length 12)")
-                        return redirect('/checkout')
+                        return redirect('/cart')
                 except:
                     if len(mobile_no)<=12:
                         ext_data = Extended_user(user=predata, mobile_no = mobile_no, address= address) 
                     else:
                         messages.info(request,"Please enter valid mobile number (max length 12)")
-                        return redirect('/checkout')
+                        return redirect('/cart')
                 ext_data.save()
                     
             predata.save()   
 
             messages.info(request,"Your address successfully updated")
-            return redirect('/checkout')
+            return redirect('/cart')
         else:
             messages.info(request,"Please login to check/update your profile")
-            return redirect('/checkout')
+            return redirect('/cart')
 
     return render(request, "index.html")
 
