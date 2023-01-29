@@ -305,7 +305,7 @@ def checkout(request,id):
 
     # Order History
 def order_history(request):
-    orders= Order.objects.filter(cutomer_name=request.user.id)
+    orders= Order.objects.filter(cutomer_name=request.user.id).order_by('-date')
     return render(request, "order_history.html", {"orders":orders})
 
     # confirm Order
@@ -339,7 +339,7 @@ def confirm_order(request,mode,id):
             my_cart.products.remove(product_id)
     my_cart.save()
 
-    return redirect("/order-history")
+    return redirect(f"/checkout/{id}")
 
 
 from manikshop.utils import render_to_pdf
