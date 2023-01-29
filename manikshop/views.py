@@ -393,8 +393,7 @@ def cart(request):
         return render(request, "cart.html", {"cart":cart})
     else:
         messages.info(request, "Please login to check your cart")
-        # return render(request, "cart.html", {})
-    return redirect("/cart")
+        return render(request, "cart.html", {})
 
 def faqs(request):
     return render(request, "faqs.html", {})
