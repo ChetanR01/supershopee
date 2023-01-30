@@ -5,6 +5,7 @@ from django.conf import settings
 
 urlpatterns = [
     path('', include("manikshop.urls")),
+    path('dashboard/', include("admin_dashboard.urls")),
     path('admin/', admin.site.urls),
 
     ]

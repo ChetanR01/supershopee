@@ -26,13 +26,14 @@ SECRET_KEY = 'django-insecure-rahg4#$f@whl2+_w$b=%#^sk&1-5=3o6&(a85sd^w14%^$+1&l
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
 
 INSTALLED_APPS = [
     'manikshop.apps.ManikshopConfig',
+    'admin_dashboard.apps.AdminDashboardConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
