@@ -4,6 +4,16 @@ from manikshop.models import ProductDetails
 
 
 class ProductForm(ModelForm):
+    def __init__(self, p_id, *args, **kwargs):
+        self.product = ProductDetails.objects.get(id=p_id)
+       
+        super(ProductForm, self).__init__(*args, **kwargs)
+
+    #     q_id = self.q_id  # this line throws an error
+    # question = ProductDetails.objects.get(pk=q_id)
+    # choice = forms.ChoiceField(choices=get_choices(question))
+
+
     class Meta:
         model= ProductDetails
         fields= ("name","category","subcategory","price","mrp","product_details","main_img","img1","img2","img3")

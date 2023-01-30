@@ -14,9 +14,7 @@ urlpatterns = [
     path('accounts/',views.account, name="accounts"),
     path('login/',views.login, name="login"),
     path('add-product/',views.add_product, name="add-product"),
-    path('add-new-product/',views.add_new_product, name="add-new-product"),
     path('edit-product/<int:id>',views.edit_product, name="edit-product"),
-    path('update-product/<int:id>',views.update_product, name="update-product"),
     
 ]
 
