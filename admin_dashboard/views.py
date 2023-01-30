@@ -68,3 +68,13 @@ def edit_product(request,id):
     subcategories=SubCategory.objects.all()
     return render(request, "01-edit-product.html", {"form":form,"categories":categories,"subcategories":subcategories})
 
+# Add New Category
+def add_category(request):
+    if request.method == "POST":
+        category_name = request.POST['new_category']
+        category= Category.objects.create(name=category_name)
+        category.save()
+        return redirect("/dashboard/products")
+
+    return redirect("/dashboard/products")
+

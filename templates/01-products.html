@@ -67,9 +67,14 @@
               </table>
             </div>
             <!-- table container -->
-            <button class="btn btn-primary btn-block text-uppercase mb-3">
-              Add new category
-            </button>
+            <form action="/dashboard/add-category/" method="post">
+              {% csrf_token %}
+            <input type="text" name="new_category" placeholder="Enter New Category Name" class="btn-block text-uppercase mb-3" style="
+            height: 3em;
+            color: black;
+            text-align: center;
+        "/>
+            <input type="submit" value="Add New Category" class="btn btn-primary btn-block text-uppercase mb-3"/>
           </div>
         </div>
       </div>
