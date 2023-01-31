@@ -11,15 +11,23 @@ urlpatterns = [
     # re_path(r'^getSubcategory/$', views.get_subcategory),
     path('',views.index, name="index"),
     path('products/',views.product, name="products"),
-    path('orders/',views.orders, name="orders"),
-    path('create-order/',views.create_order, name="create-order"),
-    path('update-order/<str:id>',views.update_order, name="update-order"),
-    path('accounts/',views.account, name="accounts"),
-    path('login/',views.login, name="login"),
     path('add-product/<int:id>',views.add_product, name="add-product"),
     path('edit-product/<int:id>',views.edit_product, name="edit-product"),
     path('add-category/',views.add_category, name="add-category"),
+
+    path('orders/',views.orders, name="orders"),
+    path('create-order/',views.create_order, name="create-order"),
+    path('update-order/<str:id>',views.update_order, name="update-order"),
+
+    path('deals/',views.deals, name="deals"),
+
+
+    path('contacts/',views.contacts, name="contacts"),
+    path('view-contact/<int:id>',views.view_contact, name="view-contact"),
+    path('subscribers/',views.subscribers, name="subscribers"),
     
+    path('accounts/',views.account, name="accounts"),
+    path('login/',views.login, name="login"),
 ]
 
 urlpatterns = urlpatterns + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

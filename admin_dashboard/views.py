@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from manikshop.models import ProductDetails, Category, SubCategory,Order
+from manikshop.models import ProductDetails, Category, SubCategory,Order,Contact_form,Subscription,Deal
 
 from .forms import ProductForm
 
@@ -42,13 +42,6 @@ def product(request):
     categories = Category.objects.all()
     return render(request, "01-products.html", {"products":products,"categories":categories,"raw_id":raw_id})
 
-def account(request):
-    products = ProductDetails.objects.all()
-    return render(request, "01-accounts.html", {})
-
-def login(request):
-    products = ProductDetails.objects.all()
-    return render(request, "01-login.html", {})
 
 # Add new product
 def add_product(request,id):
@@ -108,3 +101,29 @@ def add_category(request):
 
     return redirect("/dashboard/products")
 
+# Deals
+def deals(request):
+    deals = Deal.objects.all()
+    return render(request, "01-deals.html", {"deals":deals,})
+
+# Support 
+def contacts(request):
+    contacts = Contact_form.objects.all().order_by("-date")
+    return render(request, "01-contacts.html", {"contacts":contacts})
+ 
+def view_contact(request,id):
+    contact = Contact_form.objects.get(id=id)
+    return render(request, "01-view-contact.html", {"contact":contact})
+
+def subscribers(request):
+    subscribers = Subscription.objects.all().order_by("-date")
+    return render(request, "01-subscribers.html", {"subscribers":subscribers})
+
+def login(request):
+    products = ProductDetails.objects.all()
+    return render(request, "01-login.html", {})
+
+# ACCOUNTs
+def account(request):
+    products = ProductDetails.objects.all()
+    return render(request, "01-accounts.html", {})
