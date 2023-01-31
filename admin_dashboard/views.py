@@ -1,7 +1,9 @@
 from django.shortcuts import render, redirect
+from django.urls import reverse_lazy
+from django.views.generic.edit import CreateView
 from manikshop.models import ProductDetails, Category, SubCategory,Order,Contact_form,Subscription,Deal
 
-from .forms import ProductForm
+from .forms import ProductForm, DealsForm
 
 def index(request):
     orders = Order.objects.all().order_by("-date")
@@ -105,6 +107,40 @@ def add_category(request):
 def deals(request):
     deals = Deal.objects.all()
     return render(request, "01-deals.html", {"deals":deals,})
+
+# create new Deals
+class DealCreateView(CreateView):
+    model = Deal
+    form_class = DealsForm
+    template_name = "01-create-deals.html"
+    success_url = "/dashboard/deals"
+
+# edit deals
+def edit_deal(request,id):
+    deal = Deal.objects.get(id=id)
+    allproducts=ProductDetails.objects.all().order_by("id")
+    if request.method =="POST":
+        name = request.POST['name']
+        start_date = request.POST['start_date']
+        end_date = request.POST['end_date']
+        offer_line = request.POST['offer_line']
+        banner = request.FILES['banner']
+        deal.name =name
+        deal.start_date =start_date
+        deal.end_date =end_date
+        deal.offer_line = offer_line
+        deal.banner = banner
+
+        for product in allproducts:
+            products= request.POST.get(f"products{product.id}")
+            if products:
+                deal.products.add(product.id)
+            else:
+                deal.products.remove(product.id)
+        deal.save()
+        return redirect("/dashboard/deals")
+
+    return render(request, "01-edit-deal.html", {"deal":deal,"allproducts":allproducts})
 
 # Support 
 def contacts(request):

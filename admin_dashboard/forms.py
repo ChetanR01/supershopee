@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import ModelForm
-from manikshop.models import ProductDetails
+from manikshop.models import ProductDetails, Deal
 
 
 class ProductForm(ModelForm):
@@ -42,3 +42,19 @@ class ProductForm(ModelForm):
             'img3':forms.FileInput(attrs={'class':'btn btn-primary btn-block mx-auto',}),
             
         }
+
+class DealsForm(forms.ModelForm):
+    class Meta:
+        model = Deal
+        fields = ("name", "offer_line", "start_date","end_date","banner","products")
+
+        
+    name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control validate',}))
+    offer_line = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control validate',}))
+    start_date = forms.DateTimeField(widget=forms.DateTimeInput(attrs={"class":"form-control validate","type":"datetime-local"}))
+    end_date = forms.DateTimeField(widget=forms.DateTimeInput(attrs={"class":"form-control validate","type":"datetime-local"}))
+    banner = forms.ImageField(widget=forms.FileInput(attrs={'class':'btn btn-primary btn-block mx-auto',}))
+    products = forms.ModelMultipleChoiceField(
+        queryset=ProductDetails.objects.all(),
+        widget=forms.CheckboxSelectMultiple
+    )

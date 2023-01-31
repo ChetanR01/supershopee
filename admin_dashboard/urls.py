@@ -20,6 +20,8 @@ urlpatterns = [
     path('update-order/<str:id>',views.update_order, name="update-order"),
 
     path('deals/',views.deals, name="deals"),
+    path('create-deals/',views.DealCreateView.as_view()),
+    path('edit-deal/<int:id>',views.edit_deal, name="edit-deal"),
 
 
     path('contacts/',views.contacts, name="contacts"),
