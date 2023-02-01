@@ -28,7 +28,10 @@ urlpatterns = [
     path('view-contact/<int:id>',views.view_contact, name="view-contact"),
     path('subscribers/',views.subscribers, name="subscribers"),
     
-    path('accounts/',views.account, name="accounts"),
+    path('accounts/<str:user_type>',views.accounts, name="accounts"),
+    path('view-user/<int:id>',views.view_user, name="view-user"),
+    path('create-user/<str:user_type>',views.create_user, name="create-user"),
+
     path('login/',views.login, name="login"),
 ]
 

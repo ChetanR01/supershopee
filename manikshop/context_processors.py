@@ -5,8 +5,11 @@ def pass_cat_nd_sub_cat(request):
     all_categories = Category.objects.all()
     sub_categories = SubCategory.objects.all()
     if request.user.is_authenticated:
-        cart = Cart.objects.get(name=request.user.id)
-        itemscount= cart.products.all().count()
+        try:
+            cart = Cart.objects.get(name=request.user.id)
+            itemscount= cart.products.all().count()
+        except:
+            itemscount=0
     else:
         itemscount = 0
 

@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
-from django.urls import reverse_lazy
+from django.contrib import messages
 from django.views.generic.edit import CreateView
-from manikshop.models import ProductDetails, Category, SubCategory,Order,Contact_form,Subscription,Deal
+from django.contrib.auth.models import User
+from manikshop.models import ProductDetails, Category, SubCategory,Order,Contact_form,Subscription,Deal,Extended_user
 
 from .forms import ProductForm, DealsForm
 
@@ -160,6 +161,50 @@ def login(request):
     return render(request, "01-login.html", {})
 
 # ACCOUNTs
-def account(request):
-    products = ProductDetails.objects.all()
-    return render(request, "01-accounts.html", {})
+# Choices are: cart, cust_name, date_joined, email, extended_user, first_name, groups, id, is_active, is_staff, is_superuser, last_login, last_name, logentry, password, user_permissions, username
+def accounts(request,user_type):
+    if user_type == "customer":
+        users = User.objects.filter(is_staff=False)
+        is_staff=False
+    elif user_type == "employee":
+        users = User.objects.filter(is_staff=True)
+        is_staff=True
+    return render(request, "01-accounts.html", {"users":users,"is_staff":is_staff})
+
+# View User Account
+def view_user(request,id):
+    user = User.objects.get(id=id)
+    return render(request, "01-view-user.html", {"user":user})
+
+# Create New user
+def create_user(request,user_type):
+    if user_type == "customer":
+        is_staff=False
+    elif user_type == "employee":
+        is_staff=True
+
+    if request.method =="POST":
+        name= request.POST['name']
+        email= request.POST['email']
+        mobile_no= request.POST['mobile_no']
+        address= request.POST['address']
+        username= request.POST['username']
+        password= request.POST['password']
+        confirm_password= request.POST['confirm_password']
+
+        if password == confirm_password:
+            if User.objects.filter(username=username).exists():
+                messages.info(request,"Username is Already Used!")
+                return redirect(f"/dashboard/create-user/{user_type}")
+            else:
+                user = User.objects.create_user(username=username,password= password, email=email, first_name=name,is_staff=is_staff)
+                user.save()
+                extended_user=Extended_user.objects.create(user=user,mobile_no=mobile_no,address=address)
+                extended_user.save()
+                messages.info(request,"Account Created!!")
+                return redirect(f"/dashboard/accounts/{user_type}")
+        else:
+            messages.info(request,"Password Not matching!")
+            return redirect(f"/dashboard/create-user/{user_type}")
+
+    return render(request, "01-create-user.html", {"is_staff":is_staff})
