@@ -5,37 +5,40 @@
         <div class="container">
             <div class="row">
                 <div class="col">
-                    <p class="text-white mt-5 mb-5">Welcome back, <b>Admin</b></p>
+                    <p class="text-white mt-5 mb-5">Welcome back, <b>{{user.first_name}}</b></p>
                 </div>
             </div>
             <!-- row -->
             <div class="row tm-content-row">
+
                 <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 tm-block-col">
                     <div class="tm-bg-primary-dark tm-block">
-                        <h2 class="tm-block-title">Latest Hits</h2>
-                        <canvas id="lineChart"></canvas>
+                        <h2 class="tm-block-title">Last 10 days Orders (By Payment Mode)</h2>
+                        <canvas id="lineChart1"></canvas>
                     </div>
                 </div>
+
                 <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 tm-block-col">
                     <div class="tm-bg-primary-dark tm-block">
-                        <h2 class="tm-block-title">Performance</h2>
-                        <canvas id="barChart"></canvas>
+                        <h2 class="tm-block-title">Number of Orders (By Category)</h2>
+                        <canvas id="barChart1"></canvas>
                     </div>
                 </div>
+
                 <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 tm-block-col">
                     <div class="tm-bg-primary-dark tm-block tm-block-taller">
-                        <h2 class="tm-block-title">Storage Information</h2>
-                        <div id="pieChartContainer">
-                            <canvas id="pieChart" class="chartjs-render-monitor" width="200" height="200"></canvas>
+                        <h2 class="tm-block-title">Orders(By Order Status)</h2>
+                        <div id="pieChart1Container">
+                            <canvas id="pieChart1" class="chartjs-render-monitor" width="200" height="200"></canvas>
                         </div>                        
                     </div>
                 </div>
+
                 <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 tm-block-col">
                     <div class="tm-bg-primary-dark tm-block tm-block-taller tm-block-overflow">
-                        <h2 class="tm-block-title">Notification List</h2>
+                        <h2 class="tm-block-title">Notifications <i class="fas fa-bell"></i></h2>
                         <div class="tm-notification-items">
                             <div class="media tm-notification-item">
-                                <div class="tm-gray-circle"><img src="img/notification-01.jpg" alt="Avatar Image" class="rounded-circle"></div>
                                 <div class="media-body">
                                     <p class="mb-2"><b>Jessica</b> and <b>6 others</b> sent you new <a href="#"
                                             class="tm-notification-link">product updates</a>. Check new orders.</p>
@@ -43,7 +46,6 @@
                                 </div>
                             </div>
                             <div class="media tm-notification-item">
-                                <div class="tm-gray-circle"><img src="img/notification-02.jpg" alt="Avatar Image" class="rounded-circle"></div>
                                 <div class="media-body">
                                     <p class="mb-2"><b>Oliver Too</b> and <b>6 others</b> sent you existing <a href="#"
                                             class="tm-notification-link">product updates</a>. Read more reports.</p>
@@ -51,7 +53,6 @@
                                 </div>
                             </div>
                             <div class="media tm-notification-item">
-                                <div class="tm-gray-circle"><img src="img/notification-03.jpg" alt="Avatar Image" class="rounded-circle"></div>
                                 <div class="media-body">
                                     <p class="mb-2"><b>Victoria</b> and <b>6 others</b> sent you <a href="#"
                                             class="tm-notification-link">order updates</a>. Read order information.</p>
@@ -59,7 +60,6 @@
                                 </div>
                             </div>
                             <div class="media tm-notification-item">
-                                <div class="tm-gray-circle"><img src="img/notification-01.jpg" alt="Avatar Image" class="rounded-circle"></div>
                                 <div class="media-body">
                                     <p class="mb-2"><b>Laura Cute</b> and <b>6 others</b> sent you <a href="#"
                                             class="tm-notification-link">product records</a>.</p>
@@ -67,7 +67,6 @@
                                 </div>
                             </div>
                             <div class="media tm-notification-item">
-                                <div class="tm-gray-circle"><img src="img/notification-02.jpg" alt="Avatar Image" class="rounded-circle"></div>
                                 <div class="media-body">
                                     <p class="mb-2"><b>Samantha</b> and <b>6 others</b> sent you <a href="#"
                                             class="tm-notification-link">order stuffs</a>.</p>
@@ -75,7 +74,6 @@
                                 </div>
                             </div>
                             <div class="media tm-notification-item">
-                                <div class="tm-gray-circle"><img src="img/notification-03.jpg" alt="Avatar Image" class="rounded-circle"></div>
                                 <div class="media-body">
                                     <p class="mb-2"><b>Sophie</b> and <b>6 others</b> sent you <a href="#"
                                             class="tm-notification-link">product updates</a>.</p>
@@ -83,7 +81,6 @@
                                 </div>
                             </div>
                             <div class="media tm-notification-item">
-                                <div class="tm-gray-circle"><img src="img/notification-01.jpg" alt="Avatar Image" class="rounded-circle"></div>
                                 <div class="media-body">
                                     <p class="mb-2"><b>Lily A</b> and <b>6 others</b> sent you <a href="#"
                                             class="tm-notification-link">product updates</a>.</p>
@@ -91,7 +88,6 @@
                                 </div>
                             </div>
                             <div class="media tm-notification-item">
-                                <div class="tm-gray-circle"><img src="img/notification-02.jpg" alt="Avatar Image" class="rounded-circle"></div>
                                 <div class="media-body">
                                     <p class="mb-2"><b>Amara</b> and <b>6 others</b> sent you <a href="#"
                                             class="tm-notification-link">product updates</a>.</p>
@@ -99,7 +95,6 @@
                                 </div>
                             </div>
                             <div class="media tm-notification-item">
-                                <div class="tm-gray-circle"><img src="img/notification-03.jpg" alt="Avatar Image" class="rounded-circle"></div>
                                 <div class="media-body">
                                     <p class="mb-2"><b>Cinthela</b> and <b>6 others</b> sent you <a href="#"
                                             class="tm-notification-link">product updates</a>.</p>
@@ -191,3 +186,145 @@
         </div>
 
 {% endblock content %}
+
+{% block chartjs %}
+<script type="text/javascript">    
+    {% comment %} For Pie Chart {% endcomment %}
+    if ($("#pieChart1").length) {
+    var chartHeight = 300;
+    $("#pieChart1Container").css("height", chartHeight + "px");
+    ctxPie = document.getElementById("pieChart1").getContext("2d");
+    optionsPie = {
+        responsive: true,
+        maintainAspectRatio: false,
+        layout: {
+        padding: {
+            left: 10,
+            right: 10,
+            top: 10,
+            bottom: 10
+        }
+        },
+        legend: {
+        position: "top"
+        }
+    };
+
+    configPie = {
+        type: "pie",
+        data: {
+        datasets: [
+            {
+            data: [{{pending_orders}}, {{confirm_orders}}, {{cancel_orders}},{{on_the_way_orders}},{{delivered_orders}}],
+            backgroundColor: ["#F7604D","#4ED6B8","#A8D582","#D7D768","#9D66CC",],
+            label: "Storage"
+            }
+        ],
+        labels: [
+            "Pending",
+            "Confirm",
+            "Cancelled",
+            "On the Way",
+            "Delivered",
+        ]
+        },
+        options: optionsPie
+    };
+    pieChart1 = new Chart(ctxPie, configPie);
+    }
+
+    {% comment %} For Bar Chart {% endcomment %}
+    if ($("#barChart1").length) {
+        ctxBar = document.getElementById("barChart1").getContext("2d");
+    
+        optionsBar = {
+          responsive: true,
+          scales: {
+            yAxes: [
+              {
+                barPercentage: 0.2,
+                ticks: {
+                  beginAtZero: true
+                },
+                scaleLabel: {
+                  display: true,
+                  labelString: "Category"
+                }
+              }
+            ]
+          }
+        };
+    
+        optionsBar.maintainAspectRatio =
+          $(window).width() < width_threshold ? false : true;
+    
+        configBar = {
+          type: "horizontalBar",
+          data: {
+            labels: [{% for category in categories %}"{{category.name}}",{% endfor %}],
+            datasets: [
+              {
+                label: "No. of Orders",
+                data: {{values_list}},
+                backgroundColor: ["#F7604D","#4ED6B8","#A8D582","#D7D768","#9D66CC","#DB9C3F","#3889FC","#D1D0CE","#F7604D","#4ED6B8","#A8D582","#D7D768","#9D66CC","#DB9C3F","#3889FC","#D1D0CE","#F7604D","#4ED6B8","#A8D582","#D7D768","#9D66CC","#DB9C3F","#3889FC","#D1D0CE",],
+                borderWidth: 0
+              }
+            ]
+          },
+          options: optionsBar
+        };
+    
+        barChart1 = new Chart(ctxBar, configBar);
+      }
+
+      {% comment %} For Line Graph {% endcomment %}
+      if ($("#lineChart1").length) {
+        ctxLine = document.getElementById("lineChart1").getContext("2d");
+        optionsLine = {
+          scales: {
+            yAxes: [
+              {
+                scaleLabel: {
+                  display: true,
+                  labelString: "No. of Orders"
+                }
+              }
+            ]
+          }
+        };
+    
+        // Set aspect ratio based on window width
+        optionsLine.maintainAspectRatio =
+          $(window).width() < width_threshold ? false : true;
+    
+        configLine = {
+          type: "line",
+          data: {
+            labels: [{% for day in pre_10days_list %}"{{day}}",{% endfor %}],
+            datasets: [
+              {
+                label: "COD",
+                data: [{% for order in cod_orders_10days %}{{ order }},{% endfor %}],
+                fill: false,
+                borderColor: "rgba(255,99,132,1)",
+                cubicInterpolationMode: "monotone",
+                pointRadius: 0
+              },
+              {
+                label: "Pre-Paid",
+                data: [{% for order in prepaid_orders_10days %}{{ order }},{% endfor %}],
+                fill: false,
+                borderColor: "#D7D768",
+                cubicInterpolationMode: "monotone",
+                pointRadius: 0
+              }
+            ]
+          },
+          options: optionsLine
+        };
+    
+        lineChart1 = new Chart(ctxLine, configLine);
+      }
+
+</script>
+{% endblock chartjs %}

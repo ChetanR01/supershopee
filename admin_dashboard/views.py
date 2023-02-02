@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.db.models import Q
+from datetime import datetime, timedelta,date
 from django.views.generic.edit import CreateView
 from django.contrib.auth.models import User, auth
 from manikshop.models import ProductDetails, Category, SubCategory,Order,Contact_form,Subscription,Deal,Extended_user
@@ -14,7 +16,109 @@ def index(request):
             data_check = False
         if data_check.user_type == "admin":
             orders = Order.objects.all().order_by("-date")
-            return render(request, "01-index.html", {"orders":orders})
+            # for Order-Status (Pie Chart)
+            orders_by_orders_ids = Order.objects.filter(date__gte=datetime.now()-timedelta(days=2)).order_by("order_id")
+            pending_orders=0
+            confirm_orders=0
+            on_the_way_orders=0
+            delivered_orders=0
+            cancel_orders=0
+            pre_id=0
+            for order in orders_by_orders_ids:
+                if order.order_id==pre_id:
+                    pass
+                else:
+                    pre_id=order.order_id
+                    if order.order_status=="pending":
+                        pending_orders+=1
+                    elif order.order_status=="cancelled":
+                        cancel_orders+=1
+                    elif order.order_status=="confirm":
+                        confirm_orders+=1
+                    elif order.order_status=="on_the_way":
+                        on_the_way_orders+=1
+                    elif order.order_status=="delivered":
+                        delivered_orders+=1
+
+            # for Order-Status (Bar Chart)
+            categories =Category.objects.all()
+            from django.db.models import Count
+            result = (Order.objects.values('product__category').annotate(product_count=Count('product__category')).order_by('product__category'))
+
+            category_id_list=[]
+            temp_val_list=[]
+            for rec in result:
+                temp_val_list.append(rec['product_count'])
+                category_id_list.append(rec['product__category'])
+
+            values_list=[]
+            temp_count=0
+            for category in categories:
+                if category.id in category_id_list:
+                    values_list.append(temp_val_list[temp_count])
+                    temp_count+=1
+                else:
+                    values_list.append(0)  
+
+            # for Line Chart
+            cod_orders_10days=[]
+            prepaid_orders_10days=[]
+            for i in range(10):
+                _10days_orders_orderby_orders_ids = Order.objects.filter(date__gte=date.today()-timedelta(days=i),date__lt=date.today()-timedelta(days=i-1)).order_by("order_id")
+                
+                cod_orders=0
+                prepaid_orders=0
+                pre_id=0
+                for order in _10days_orders_orderby_orders_ids:
+                    if order.order_id==pre_id:
+                        pass
+                    else:
+                        pre_id=order.order_id
+                        if order.payment_method=="cash":
+                            cod_orders+=1
+                        elif order.payment_method=="prepaid":
+                            prepaid_orders+=1
+
+                cod_orders_10days.append(cod_orders)
+                prepaid_orders_10days.append(prepaid_orders)
+
+            # reverse prepaid_orders_10days and cod_orders_10days lists
+            cod_orders_10days.reverse()
+            prepaid_orders_10days.reverse()
+
+            # Data Month format list i.e. 03/Feb,..
+            temp_pre_10days_list= [datetime.now().date()-timedelta(days=i) for i in range(10)]
+            pre_10days_list=[]            
+            for i in temp_pre_10days_list:
+                day=i.day
+                if i.month==1:
+                    month="Jan"
+                if i.month==2:
+                    month="Feb"
+                if i.month==3:
+                    month="Mar"
+                if i.month==4:
+                    month="Apil"
+                if i.month==5:
+                    month="May"
+                if i.month==6:
+                    month="June"
+                if i.month==7:
+                    month="Jul"
+                if i.month==8:
+                    month="Aug"
+                if i.month==9:
+                    month="Sept"
+                if i.month==10:
+                    month="Oct"
+                if i.month==11:
+                    month="Nov"
+                else:
+                    month="Dec"
+                pre_10days_list.append(f"{day}{month}")
+            pre_10days_list.reverse()
+
+            return render(request, "01-index.html", {"orders":orders,"pending_orders":pending_orders,"cancel_orders":cancel_orders,"confirm_orders":confirm_orders,"on_the_way_orders":on_the_way_orders,"delivered_orders":delivered_orders,"categories":categories,"values_list":values_list,"pre_10days_list":pre_10days_list,"cod_orders_10days":cod_orders_10days,"prepaid_orders_10days":prepaid_orders_10days})
         else:
             print("You're not authorized to access this page, Please Contact Developer for Help!")
             return redirect("/dashboard/logout")
