@@ -35,4 +35,6 @@ urlpatterns = [
     path('track-order',views.track_order, name="track-order"),
     path('subscription',views.subscription, name="subscription"),
     path('generate-report/<str:order_id>',views.generate_report, name="generate-report"),
+    #for payment gateway
+    path('update-payment-status',views.update_payment_status, name="update-payment-status"),
 ]

@@ -8,21 +8,29 @@ from django.core.mail import send_mail, EmailMessage
 from django.core.paginator import Paginator
 from django.template.loader import render_to_string, get_template
 from django.db.models import Q
-
-
-from .models import ProductDetails
-
-
 from django.shortcuts import render
-from .models import SubCategory, Category, Extended_user,Deal, Subscription, Cart, Order, Contact_form
+from .models import SubCategory, Category, Extended_user,Deal, Subscription, Cart, Order, Contact_form ,ProductDetails
 from django.http import HttpResponse
 import json
+
+# for Payment Gateway 
+from instamojo_wrapper import Instamojo
+from django.conf import settings
+
+api = Instamojo(api_key=settings.API_KEY, auth_token=settings.AUTH_TOKEN,endpoint='https://test.instamojo.com/api/1.1/')
 
 # for base file
 def get_subcategory(request):
     id = request.GET.get('id', '')
     result = list(SubCategory.objects.filter(category_id=int(id)).values('id', 'name'))
     return HttpResponse(json.dumps(result), content_type="application/json")
+
+
+# for Payment Gateway
+from django.views.decorators.csrf import csrf_exempt
+@csrf_exempt
+def handel_request(request):
+    pass
 
 # Create your views here.
 def index(request):
@@ -301,12 +309,56 @@ def checkout(request,id):
     grand_total=0
     for order in orders:
         grand_total+=order.total_cost
-    return render(request, "checkout.html", {"orders":orders,"grand_total":grand_total,"order_id":id})
+    if grand_total<10:
+        messages.info(request,"For checkout Order Value must be more than Rs.10, Please add more products to cart")
+        return redirect("/cart")
+    # create payment request
+    response = api.payment_request_create(amount=grand_total,purpose=f"Transaction for Order ID: {id}",buyer_name=request.user.first_name,email=request.user.email,redirect_url="http://localhost:8000/update-payment-status" )
+    print("Response : ",response)
+    payment_order_id = response['payment_request']['id']
+    for order in orders:
+        order.payment_order_id=payment_order_id
+        order.save()
+    payment_url= response['payment_request']['longurl']
+    print(payment_url)
+
+    return render(request, "checkout.html", {"orders":orders,"grand_total":grand_total,"order_id":id,"payment_url":payment_url})
+
 
     # Order History
 def order_history(request):
     orders= Order.objects.filter(cutomer_name=request.user.id).order_by('-date')
     return render(request, "order_history.html", {"orders":orders})
+
+# Update Payment Status
+def update_payment_status(request):
+    payment_order_id= request.GET.get('payment_request_id')
+    transaction_id= request.GET.get('payment_id')
+    payment_status= request.GET.get('payment_status')
+    orders= Order.objects.filter(payment_order_id=payment_order_id)
+    order_id = 0
+    if payment_status=="Credit":
+        product_list=[]
+        for order in orders:
+            order.transaction_id=transaction_id
+            order.order_status="confirm"
+            order.payment_method="prepaid"
+            order.payment_status="confirm"
+            order_id=order.order_id
+            order.save()
+            product_list.append(order.product.id)
+        # Remove items from cart
+        my_cart = Cart.objects.get(name=request.user)
+        if my_cart:
+            for product_id in product_list:
+                my_cart.products.remove(product_id)
+        my_cart.save()    
+        return redirect(f"/confirm-order/online/{order_id}")
+    else:
+        for order in orders:
+            order_id=order.order_id
+        messages.info(request,"Payment Failed!, Please try again")
+        return redirect(f"/checkout/{order_id}")
 
     # confirm Order
 def confirm_order(request,mode,id):
@@ -322,13 +374,7 @@ def confirm_order(request,mode,id):
         # return redirect("/")
             
     elif mode=="online":
-        for order in orders:
-            order.order_status="confirm"
-            order.payment_method="prepaid"
-            order.payment_status="confirm"
-            order.transaction_id="TRANSACTION_ID"
-            order.save()
-        # return redirect("/")
+        messages.info(request, f"Payment Recived Successfully, Thank You!")
     else: 
         print("Something went wrong")
         # return redirect("/cart")

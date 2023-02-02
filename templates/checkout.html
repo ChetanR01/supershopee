@@ -104,7 +104,7 @@
 				<button type="submit" class="btn btn-primary" style="margin-top: 2em;height: 4em;width: 20em;" onclick="location.href='/confirm-order/cod/{{order_id}}'">Confirm Order (COD <i class="fa fa-money"></i> )
 				</button>
 
-				<button type="submit" class="btn btn-primary" style="margin-top: 2em;height: 4em;width: 20em;" onclick="location.href='/confirm-order/online/{{order_id}}'">Confirm Order (Pay Online <i class="fa fa-credit-card"></i> )
+				<button type="submit" class="btn btn-primary" style="margin-top: 2em;height: 4em;width: 20em;" onclick="location.href='{{payment_url}}'">Confirm Order (Pay Online <i class="fa fa-credit-card"></i> )
 				</button>
 				
 				{% endif %}

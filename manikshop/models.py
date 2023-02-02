@@ -71,6 +71,7 @@ class Order(models.Model):
         ('prepaid', 'Pre-Paid'), 
         ]
     payment_method = models.CharField(max_length=100, choices=payment_method_list, default="cash")
+    payment_order_id = models.CharField(max_length=500)
     transaction_id = models.CharField(max_length=100)
 
     # Generate Order Id

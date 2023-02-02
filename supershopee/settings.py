@@ -146,3 +146,8 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = 'crrathod.tech@gmail.com'
 EMAIL_HOST_PASSWORD ='dindgmotqoubbuno'
 EMAIL_USE_TLS = True
+
+# From Payment Gateway
+API_KEY = "test_54bb46de5e3bfd70ae17656b895"
+AUTH_TOKEN = "test_1a2a5b7eb0d4190e7d0358d869d"
+SALT = "6dc66e97aee14fd4a0751af12612dc72"
