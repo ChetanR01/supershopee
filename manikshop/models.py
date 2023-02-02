@@ -144,8 +144,8 @@ class Extended_user(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     mobile_no = models.CharField(max_length=12)
     address = models.CharField(max_length=500)
-    # user_image = CloudinaryField('profile_img')
-    # user_image = models.ImageField(upload_to='profile_img', default="/assets/assets/images/profile_photo.jpg")
+    USER_TYPE = (('admin', "Admin"), ('employee', "Employee"), ('customer', "Customer"))
+    user_type = models.CharField(choices=USER_TYPE, max_length=10, default="customer")
 
     def __str__(self):
         return self.user.first_name

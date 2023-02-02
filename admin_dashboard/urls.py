@@ -33,6 +33,7 @@ urlpatterns = [
     path('create-user/<str:user_type>',views.create_user, name="create-user"),
 
     path('login/',views.login, name="login"),
+    path('logout/',views.logout, name="logout"),
 ]
 
 urlpatterns = urlpatterns + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -13,7 +13,8 @@
             </div>
             <div class="row mt-2">
               <div class="col-12">
-                <form action="/dashboard" method="post" class="tm-login-form">
+                <form action="/dashboard/login/" method="post" class="tm-login-form">
+                  {% csrf_token %}
                   <div class="form-group">
                     <label for="username">Username</label>
                     <input
@@ -21,7 +22,6 @@
                       type="text"
                       class="form-control validate"
                       id="username"
-                      value=""
                       required
                     />
                   </div>
@@ -32,7 +32,6 @@
                       type="password"
                       class="form-control validate"
                       id="password"
-                      value=""
                       required
                     />
                   </div>
@@ -43,10 +42,7 @@
                     >
                       Login
                     </button>
-                  </div>
-                  <button class="mt-5 btn btn-primary btn-block text-uppercase">
-                    Forgot your password?
-                  </button>
+                  </div>                  
                 </form>
               </div>
             </div>
