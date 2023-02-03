@@ -158,7 +158,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 						<form action="/login" method="post">
 							{% csrf_token %}
 							<div class="styled-input agile-styled-input-top">
-								<input type="email" placeholder="Email" name="email" required="">
+								<input type="text" placeholder="Username(Mobile Number)" name="username" required="" maxlength="10">
 							</div>
 							<div class="styled-input">
 								<input type="password" placeholder="Password" name="password" required="">
@@ -197,6 +197,9 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 							{% csrf_token %}
 							<div class="styled-input agile-styled-input-top">
 								<input type="text" placeholder="Name" name="name" required="">
+							</div>
+							<div class="styled-input">
+								<input type="text" placeholder="Mobile Number" name="mobile_no" required="" maxlength="10">
 							</div>
 							<div class="styled-input">
 								<input type="email" placeholder="E-mail" name="email" required="">
@@ -249,7 +252,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 								<input type="email" placeholder="Your E-mail = {{user.email}}" name="email" value="{{user.email}}" required="">
 							</div>
 							<div class="styled-input">
-								<input type="text" placeholder="Your Mobile No. = {{user.extended_user.mobile_no}}" name="mobile_no" value="{{user.extended_user.mobile_no}}" id="mobile_no" required="">
+								<input type="text" placeholder="Your Mobile No. = {{user.extended_user.mobile_no}}" name="mobile_no" value="{{user.extended_user.mobile_no}}" id="mobile_no" required="" maxlength="10">
 							</div>
 							<div class="styled-input">
 								<input type="text" placeholder="Your Address = {{user.extended_user.address}}" name="address" value="{{user.extended_user.address}}" id="address" required="">

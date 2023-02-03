@@ -120,7 +120,7 @@ def index(request):
 
             return render(request, "01-index.html", {"orders":orders,"pending_orders":pending_orders,"cancel_orders":cancel_orders,"confirm_orders":confirm_orders,"on_the_way_orders":on_the_way_orders,"delivered_orders":delivered_orders,"categories":categories,"values_list":values_list,"pre_10days_list":pre_10days_list,"cod_orders_10days":cod_orders_10days,"prepaid_orders_10days":prepaid_orders_10days})
         else:
-            print("You're not authorized to access this page, Please Contact Developer for Help!")
+            messages.info(request,"You're not authorized to access this page, Please Contact Developer for Help!")
             return redirect("/dashboard/logout")
     else:
         return redirect("/dashboard/login")
@@ -171,6 +171,7 @@ def update_order(request,id):
                     order.order_status=order_status
                     order.payment_status=payment_status
                     order.save()
+                messages.info(request,f"Order ({id}) Updated Successfully!")
                 return redirect("/dashboard/orders")
             grand_total=0
             for order in orders:
@@ -246,7 +247,6 @@ def edit_product(request,id):
             instance=ProductDetails.objects.get(id=id)
             if request.method == "POST":
                 form = ProductForm(id,request.POST or None, request.FILES or None,instance=instance )
-                print("ERROR!!!\n",form.errors)
                 if form.is_valid():
                     category_id = request.POST.get('category')
                     subcategory_id = request.POST.get('subcategory')
@@ -413,7 +413,7 @@ def login(request):
             auth.login(request,user)
             return redirect("/dashboard")
         else:
-            print("Invalid Credentials")
+            messages.info(request,"Invalid Credentials!")
             return redirect("/dashboard/login")
     return render(request, "01-login.html", {})
 
@@ -478,7 +478,7 @@ def create_user(request,user_type):
                 email= request.POST['email']
                 mobile_no= request.POST['mobile_no']
                 address= request.POST['address']
-                username= request.POST['username']
+                username= request.POST['mobile_no']
                 password= request.POST['password']
                 confirm_password= request.POST['confirm_password']
 

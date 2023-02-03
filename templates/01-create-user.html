@@ -80,6 +80,7 @@
                 required
               />
             </div>
+            {% if is_staff %}
             <div class="form-group mb-3">
               <label
               for="username"
@@ -93,6 +94,21 @@
                 required
               />                
             </div>
+            {% else %}
+            <div class="form-group mb-3">
+              <label
+              for="username"
+              >UserName [Not Required (Uses Mobile No. as username)]</label
+              >
+              <input
+                id="username"
+                name="username"
+                type="text"
+                class="form-control validate" 
+                placeholder="Not Required (Uses Mobile No. as username)"
+              />                
+            </div>
+            {% endif %}
             <div class="form-group mb-3">
               <label
                 for="password"

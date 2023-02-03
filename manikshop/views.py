@@ -295,8 +295,7 @@ def create_order(request):
             create_order = Order.objects.create(cutomer_name=request.user, date= datetime.datetime.now(), product= product, quantity= int(rec[1]))
             create_order.save()
             
-        if Output:
-            messages.info(request, "Order placed successfully!, Thank For Shopping With Us 🙂")        
+        if Output:        
             return redirect(f"/checkout/{create_order.order_id}")
         else:
             messages.info(request, "Your Cart🛒 is Empty!  Please add products to cart🛒")        
@@ -456,8 +455,9 @@ def privacy(request):
 def signup(request):
     if request.method== "POST":
         name = request.POST['name']
+        mobile_no = request.POST['mobile_no']
         email = request.POST['email']
-        username = request.POST['email']
+        username = request.POST['mobile_no'] # username = mobile_no
         password = request.POST['password']
         confirm_pass = request.POST['confirm_pass']
 
@@ -469,6 +469,8 @@ def signup(request):
             else:
                 user = User.objects.create_user(username=username,password= password, email=email, first_name=name)
                 user.save()
+                extended_user=Extended_user.objects.create(user=user,mobile_no=mobile_no,user_type="customer", address="Not Available")
+                extended_user.save()
                 messages.info(request,"Your have successfully created account, Login Now!")
 
                 return redirect('/')
@@ -482,7 +484,7 @@ def signup(request):
 
 def login(request):
     if request.method== "POST":
-        username = request.POST['email']
+        username = request.POST['username']
         password = request.POST['password']
         user= auth.authenticate(username=username,password=password)
 
@@ -514,7 +516,7 @@ def profile(request):
             address = request.POST['address']
             predata.first_name = name
             predata.email = email
-            predata.username = email
+            predata.username = mobile_no
 
             try:
                 data_check =  Extended_user.objects.get(user = predata)
@@ -525,37 +527,17 @@ def profile(request):
             if data_check:
                 try:
                     data_check.address = address
-                    if len(mobile_no)<=12:
-                        data_check.mobile_no = mobile_no
-                    else:
-                        messages.info(request,"Please enter valid mobile number (max length 12)")
-                        return redirect('/')
+                    data_check.mobile_no = mobile_no
+                    
                 except:
                     data_check.address= address
-                    if len(mobile_no)<=12:
-                        data_check.mobile_no = mobile_no
-                    else:
-                        messages.info(request,"Please enter valid mobile number (max length 12)")
-                        return redirect('/')
+                    data_check.mobile_no = mobile_no
                 data_check.save()
-            else:
-                try:
-                    
-                    if len(mobile_no)<=12:
-                        ext_data = Extended_user(user=predata, mobile_no = mobile_no, address= address)  
-                    else:
-                        messages.info(request,"Please enter valid mobile number (max length 12)")
-                        return redirect('/')
-                except:
-                    if len(mobile_no)<=12:
-                        ext_data = Extended_user(user=predata, mobile_no = mobile_no, address= address) 
-                    else:
-                        messages.info(request,"Please enter valid mobile number (max length 12)")
-                        return redirect('/')
+            else:                   
+                ext_data = Extended_user(user=predata, mobile_no = mobile_no, address= address)                   
                 ext_data.save()
                     
             predata.save()   
-
             messages.info(request,"Your account details successfully updated")
             return redirect('/')
         else:
@@ -573,6 +555,7 @@ def update_address(request):
             mobile_no = request.POST['mobile_no']
             address = request.POST['address']
             predata.first_name = name
+            predata.username = mobile_no
             try:
                 data_check =  Extended_user.objects.get(user = predata)
             except:
@@ -581,35 +564,14 @@ def update_address(request):
             if data_check:
                 try:
                     data_check.address = address
-                    if len(mobile_no)<=12:
-                        data_check.mobile_no = mobile_no
-                    else:
-                        messages.info(request,"Please enter valid mobile number (max length 12)")
-                        return redirect('/cart')
+                    data_check.mobile_no = mobile_no
                 except:
                     data_check.address= address
-                    if len(mobile_no)<=12:
-                        data_check.mobile_no = mobile_no
-                    else:
-                        messages.info(request,"Please enter valid mobile number (max length 12)")
-                        return redirect('/cart')
+                    data_check.mobile_no = mobile_no
                 data_check.save()
             else:
-                try:
-                    
-                    if len(mobile_no)<=12:
-                        ext_data = Extended_user(user=predata, mobile_no = mobile_no, address= address)  
-                    else:
-                        messages.info(request,"Please enter valid mobile number (max length 12)")
-                        return redirect('/cart')
-                except:
-                    if len(mobile_no)<=12:
-                        ext_data = Extended_user(user=predata, mobile_no = mobile_no, address= address) 
-                    else:
-                        messages.info(request,"Please enter valid mobile number (max length 12)")
-                        return redirect('/cart')
+                ext_data = Extended_user(user=predata, mobile_no = mobile_no, address= address)  
                 ext_data.save()
-                    
             predata.save()   
 
             messages.info(request,"Your address successfully updated")
